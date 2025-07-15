@@ -9,20 +9,19 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     
-    # Paso 1: Configurar Flutter con la versión exacta que necesitas
+    # Paso 1: Configurar Flutter con la versión exacta
     - uses: subosito/flutter-action@v2
       with:
         channel: 'stable'
-        flutter-version: '3.22.4'  # Versión que incluye Dart 3.5.3+
-        cache: true
-        cache-version: 'v3.22.4'
+        flutter-version: '3.22.4'
+        architecture: 'x64'  # Especifica arquitectura
     
-    # Paso 2: Verificar versiones (para diagnóstico)
-    - name: Verify versions
+    # Paso 2: Verificar instalación
+    - name: Verify Flutter installation
       run: |
         flutter --version
-        dart --version
-    
+        which flutter
+        
     # Paso 3: Obtener dependencias
     - name: Get dependencies
       run: flutter pub get
