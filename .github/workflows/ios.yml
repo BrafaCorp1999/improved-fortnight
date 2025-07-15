@@ -9,35 +9,31 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     
-    # Paso 1: Instalar Flutter con configuración correcta del PATH
-    - name: Install Flutter
+    # Paso 1: Configurar Flutter
+    - name: Set up Flutter
       run: |
         git clone https://github.com/flutter/flutter.git -b stable --depth 1
         echo "$GITHUB_WORKSPACE/flutter/bin" >> $GITHUB_PATH
-        export PATH="$GITHUB_WORKSPACE/flutter/bin:$PATH"
         flutter precache --ios
         flutter --version
         
-    # Paso 2: Verificar instalación
-    - name: Verify Flutter
-      run: |
-        which flutter
-        flutter doctor -v
-        
-    # Paso 3: Configurar entorno iOS
-    - name: Set up iOS
+    # Paso 2: Configurar Xcode
+    - name: Set up Xcode
       run: |
         sudo xcode-select --switch /Applications/Xcode.app
         sudo xcodebuild -runFirstLaunch
         
-    # Paso 4: Obtener dependencias
-    - name: Get dependencies
+    # Paso 3: Generar archivos iOS
+    - name: Generate iOS files
+      run: flutter pub get && flutter gen-l10n && flutter create --platforms ios .
+        
+    # Paso 4: Instalar dependencias iOS
+    - name: Install iOS dependencies
       run: |
-        flutter pub get
         cd ios
         pod install --repo-update
         
-    # Paso 5: Build iOS
+    # Paso 5: Build IPA
     - name: Build IPA
       run: flutter build ios --release --no-codesign
       
