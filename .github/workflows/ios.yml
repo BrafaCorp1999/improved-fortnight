@@ -14,7 +14,7 @@ jobs:
 
     steps:
     - name: Checkout Repository
-      uses: actions/checkout@v2  # Checkout del código
+      uses: actions/checkout@v4  # Actualizado a la versión más reciente
 
     - name: Set up Flutter
       uses: subosito/flutter-action@v2
@@ -30,7 +30,7 @@ jobs:
       run: flutter build ios --release  # Compila para iOS en modo release
 
     - name: Upload IPA as artifact
-      uses: actions/upload-artifact@v3  # Usar la versión más reciente
+      uses: actions/upload-artifact@v4  # Usar la versión más reciente
       with:
         name: app-ios
         path: build/ios/iphoneos/Runner.ipa  # Especifica el archivo IPA que se genera
