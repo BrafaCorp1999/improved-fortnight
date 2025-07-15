@@ -17,9 +17,10 @@ jobs:
         echo "=== Instalando Flutter ==="
         # Descargar Flutter si no está instalado
         git clone https://github.com/flutter/flutter.git -b stable $HOME/flutter
-        # Asegurarnos de que Flutter esté en el PATH correctamente para todos los pasos
-        echo "$HOME/flutter/bin" >> $GITHUB_PATH
-        flutter --version  # Verificar que Flutter esté correctamente instalado
+        # Agregar Flutter al PATH correctamente
+        echo "$HOME/flutter/bin" >> $GITHUB_ENV
+        # Verificar la instalación de Flutter
+        flutter --version
 
     # Paso 2: Configurar Xcode
     - name: Setup Xcode
@@ -38,4 +39,21 @@ jobs:
       run: |
         flutter pub get
         cd ios
-        pod install --r
+        pod install --repo-update
+        
+    # Paso 5: Construir IPA
+    - name: Build iOS
+      run: |
+        flutter build ios --release --no-codesign --verbose
+        cd build/ios/iphoneos
+        mkdir -p Payload
+        cp -r Runner.app Payload/
+        zip -r Runner.ipa Payload
+        
+    # Paso 6: Subir artefacto
+    - name: Upload IPA
+      uses: actions/upload-artifact@v4
+      with:
+        name: app-ipa
+        path: build/ios/iphoneos/Runner.ipa
+        retention-days: 1
