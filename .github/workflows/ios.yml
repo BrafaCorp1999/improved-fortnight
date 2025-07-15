@@ -75,7 +75,7 @@ jobs:
         /usr/libexec/PlistBuddy -c "Add :CLANG_ENABLE_MODULES string YES" Runner.xcodeproj/project.pbxproj 2>/dev/null || true
         /usr/libexec/PlistBuddy -c "Set :CLANG_ENABLE_MODULES YES" Runner.xcodeproj/project.pbxproj 2>/dev/null || true
         
-    # Paso 6: Construir IPA
+    # Paso 6: Construir IPA (con detalles adicionales de Xcode)
     - name: Build IPA
       run: |
         cd ios
@@ -87,7 +87,7 @@ jobs:
           CODE_SIGN_IDENTITY="" \
           CODE_SIGNING_REQUIRED=NO \
           CODE_SIGNING_ALLOWED=NO \
-          clean build
+          clean build | tee xcodebuild.log
         
     # Paso 7: Empaquetar IPA
     - name: Package IPA
