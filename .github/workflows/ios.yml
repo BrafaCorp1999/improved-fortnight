@@ -9,36 +9,39 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     
-    # Paso 1: Instalar Flutter con PATH absoluto
-    - name: Install Flutter
+    # Paso 1: Configurar Flutter
+    - name: Set up Flutter
       run: |
-        echo "=== Instalando Flutter ==="
-        git clone https://github.com/flutter/flutter.git -b stable --depth 1 flutter_sdk
-        FLUTTER_PATH="$GITHUB_WORKSPACE/flutter_sdk/bin"
-        echo "FLUTTER_PATH=$FLUTTER_PATH" >> $GITHUB_ENV
-        echo "=== Actualizando PATH ==="
-        echo "$FLUTTER_PATH" >> $GITHUB_PATH
-        export PATH="$FLUTTER_PATH:$PATH"
-        echo "=== Verificando instalación ==="
-        ls -la $FLUTTER_PATH/flutter
-        $FLUTTER_PATH/flutter --version
-        echo "=== Precaching ==="
-        $FLUTTER_PATH/flutter precache --ios
+        git clone https://github.com/flutter/flutter.git -b stable --depth 1
+        echo "$GITHUB_WORKSPACE/flutter/bin" >> $GITHUB_PATH
+        flutter --version
+        flutter precache --ios
         
-    # Paso 2: Configurar entorno iOS
+    # Paso 2: Configurar iOS
     - name: Set up iOS
       run: |
-        echo "=== Configurando Xcode ==="
         sudo xcode-select --switch /Applications/Xcode.app
         sudo xcodebuild -runFirstLaunch
         
-    # Paso 3: Regenerar estructura iOS
-    - name: Generate iOS files
+    # Paso 3: Actualizar Podfile
+    - name: Update Podfile
       run: |
-        echo "=== Regenerando iOS ==="
-        flutter clean
-        rm -rf ios .ios
-        flutter create --platforms ios --project-name wink .
+        echo "=== Actualizando Podfile ==="
+        cd ios
+        # Asegurar platform iOS 12.0 o superior
+        sed -i '' "s/platform :ios.*/platform :ios, '12.0'/" Podfile
+        # Agregar configuración de Firebase
+        echo "
+        post_install do |installer|
+          installer.pods_project.targets.each do |target|
+            target.build_configurations.each do |config|
+              config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '12.0'
+              config.build_settings['ENABLE_BITCODE'] = 'NO'
+            end
+          end
+        end
+        " >> Podfile
+        cat Podfile
         
     # Paso 4: Obtener dependencias
     - name: Get dependencies
@@ -46,6 +49,7 @@ jobs:
         echo "=== Obteniendo dependencias ==="
         flutter pub get
         cd ios
+        pod repo update
         pod install --repo-update
         
     # Paso 5: Build IPA
