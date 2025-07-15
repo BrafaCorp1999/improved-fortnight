@@ -1,4 +1,4 @@
-name: Build iOS IPA
+name: Build and Distribute iOS
 
 on: [push]
 
@@ -11,16 +11,25 @@ jobs:
     
     - uses: subosito/flutter-action@v2
       with:
-        flutter-version: '3.22.2'
+        channel: 'stable'
+        flutter-version: '3.22.3'
         
     - run: flutter pub get
     
+    - run: flutter build ios --release
+    
     - run: |
-        flutter build ios --release --no-codesign
-        cd build/ios/ipa
-        zip -r app.zip Runner.ipa
+        cd ios
+        pod install
         
-    - uses: actions/upload-artifact@v4
-      with:
-        name: app-ipa
-        path: build/ios/ipa/app.zip
+        # Configura Firebase (necesitarás crear estos secrets en GitHub)
+        echo ${{ secrets.FIREBASE_CONFIG }} > Runner/firebase_config.json
+        
+        # Instala fastlane si no está presente
+        sudo gem install fastlane -NV
+        
+        # Distribuye a Firebase
+        fastlane run firebase_app_distribution \
+          app:${{ secrets.FIREBASE_APP_ID }} \
+          firebase_cli_token:${{ secrets.FIREBASE_TOKEN }} \
+          groups: "testers"
