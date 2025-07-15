@@ -92,8 +92,11 @@ jobs:
     # Paso 7: Verificar existencia de Runner.app
     - name: Verify Runner.app location
       run: |
-        ls ios/build/Release-iphoneos/Runner.app
-        ls ios/build/Release-iphoneos
+        # Listar todo el contenido de la carpeta build
+        echo "Listing contents of ios/build/"
+        ls ios/build/
+        # Listar todos los archivos para identificar si Runner.app está en otra ubicación
+        ls ios/build/*/Runner.app || echo "Runner.app no encontrado"
         
     # Paso 8: Empaquetar IPA
     - name: Package IPA
