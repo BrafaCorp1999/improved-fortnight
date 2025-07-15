@@ -9,27 +9,31 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     
-    # Paso 1: Configurar Flutter con la versión exacta
-    - uses: subosito/flutter-action@v2
-      with:
-        channel: 'stable'
-        flutter-version: '3.22.4'
-        architecture: 'x64'  # Especifica arquitectura
-    
-    # Paso 2: Verificar instalación
-    - name: Verify Flutter installation
+    # Paso 1: Instalar Flutter manualmente (solución definitiva)
+    - name: Install Flutter
       run: |
+        git clone https://github.com/flutter/flutter.git -b stable --depth 1
+        echo "$GITHUB_WORKSPACE/flutter/bin" >> $GITHUB_PATH
+        flutter precache --ios
         flutter --version
-        which flutter
+        
+    # Paso 2: Configurar entorno iOS
+    - name: Set up iOS
+      run: |
+        sudo xcode-select --switch /Applications/Xcode.app
+        sudo xcodebuild -runFirstLaunch
         
     # Paso 3: Obtener dependencias
     - name: Get dependencies
-      run: flutter pub get
-    
+      run: |
+        flutter pub get
+        cd ios
+        pod install --repo-update
+        
     # Paso 4: Build iOS
     - name: Build IPA
       run: flutter build ios --release --no-codesign
-    
+      
     # Paso 5: Subir artefacto
     - uses: actions/upload-artifact@v4
       with:
