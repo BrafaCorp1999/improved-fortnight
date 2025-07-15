@@ -1,46 +1,61 @@
 name: Flutter iOS Build
 
-on:
-  push:
-    branches:
-      - main  # Cambia a la rama que uses para producción
-  pull_request:
-    branches:
-      - main  # Para que se ejecute en pull requests también
+on: [push]
 
 jobs:
   build:
-    runs-on: macos-latest  # Usar runner de macOS para compilar para iOS
-
+    runs-on: macos-latest
+    timeout-minutes: 30
+    
     steps:
-    - name: Checkout Repository
-      uses: actions/checkout@v4  # Usar la última versión de esta acción
+    - name: Checkout code
+      uses: actions/checkout@v4
 
-    - name: Uninstall any previous versions of Flutter and Dart
+    # Paso 1: Instalar Flutter manualmente (solución garantizada)
+    - name: Install Flutter
       run: |
-        sudo rm -rf /usr/local/flutter  # Limpiar cualquier instalación previa de Flutter
-        sudo rm -rf /usr/local/bin/dart # Limpiar cualquier instalación previa de Dart
+        echo "=== Descargando Flutter ==="
+        FLUTTER_VERSION="3.22.4"
+        curl -L https://storage.googleapis.com/flutter_infra_release/releases/stable/macos/flutter_macos_arm64_${FLUTTER_VERSION}-stable.zip -o flutter.zip
+        unzip flutter.zip -d $HOME
+        echo "=== Configurando PATH ==="
+        echo "$HOME/flutter/bin" >> $GITHUB_PATH
+        echo "::add-path::$HOME/flutter/bin"
+        flutter --version
+        flutter precache --ios
 
-    - name: Install Flutter SDK manually
+    # Paso 2: Configurar Xcode
+    - name: Setup Xcode
       run: |
-        git clone https://github.com/flutter/flutter.git -b stable /usr/local/flutter  # Instalar Flutter
-        export PATH="$PATH:/usr/local/flutter/bin"
-        flutter doctor  # Verificar la instalación
-
-    - name: Verify Flutter and Dart versions
+        sudo xcode-select --switch /Applications/Xcode.app
+        sudo xcodebuild -runFirstLaunch
+        
+    # Paso 3: Instalar CocoaPods
+    - name: Install CocoaPods
       run: |
-        flutter --version  # Verificar la versión de Flutter
-        dart --version    # Verificar la versión de Dart
-
-    - name: Install Dependencies
+        sudo gem install cocoapods -v 1.12.1
+        pod setup
+        
+    # Paso 4: Obtener dependencias
+    - name: Get dependencies
       run: |
-        flutter pub get  # Instalar las dependencias
-
+        flutter pub get
+        cd ios
+        pod install --repo-update
+        
+    # Paso 5: Construir IPA
     - name: Build iOS
-      run: flutter build ios --release  # Compilar para iOS en modo release
-
-    - name: Upload IPA as artifact
-      uses: actions/upload-artifact@v4  # Usar la versión más reciente
+      run: |
+        flutter build ios --release --no-codesign --verbose
+        cd build/ios/iphoneos
+        mkdir -p Payload
+        cp -r Runner.app Payload/
+        zip -r Runner.ipa Payload
+        
+    # Paso 6: Subir artefacto
+    - name: Upload IPA
+      uses: actions/upload-artifact@v4
       with:
-        name: app-ios
-        path: build/ios/iphoneos/Runner.ipa  # Especifica el archivo IPA que se genera
+        name: app-ipa
+        path: build/ios/iphoneos/Runner.ipa
+        retention-days: 1
