@@ -16,18 +16,18 @@ jobs:
     - name: Checkout Repository
       uses: actions/checkout@v4  # Usar la última versión de esta acción
 
-    - name: Set up Flutter
-      uses: subosito/flutter-action@v2
-      with:
-        flutter-version: '3.10.4'  # Especifica la versión de Flutter que necesitas
+    - name: Uninstall any previous versions of Flutter and Dart
+      run: |
+        sudo rm -rf /usr/local/flutter  # Limpiar cualquier instalación previa de Flutter
+        sudo rm -rf /usr/local/bin/dart # Limpiar cualquier instalación previa de Dart
 
-    - name: Clean Flutter cache
-      run: flutter clean  # Limpiar el caché de Flutter para evitar versiones antiguas
+    - name: Install Flutter SDK manually
+      run: |
+        git clone https://github.com/flutter/flutter.git -b stable /usr/local/flutter  # Instalar Flutter
+        export PATH="$PATH:/usr/local/flutter/bin"
+        flutter doctor  # Verificar la instalación
 
-    - name: Ensure Flutter is on the stable channel
-      run: flutter channel stable  # Asegurarse de que estamos usando el canal estable
-
-    - name: Check Flutter and Dart version
+    - name: Verify Flutter and Dart versions
       run: |
         flutter --version  # Verificar la versión de Flutter
         dart --version    # Verificar la versión de Dart
