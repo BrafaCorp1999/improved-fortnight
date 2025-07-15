@@ -87,9 +87,15 @@ jobs:
           CODE_SIGN_IDENTITY="" \
           CODE_SIGNING_REQUIRED=NO \
           CODE_SIGNING_ALLOWED=NO \
-          clean build | tee xcodebuild.log
+          clean build
         
-    # Paso 7: Empaquetar IPA
+    # Paso 7: Verificar existencia de Runner.app
+    - name: Verify Runner.app location
+      run: |
+        ls ios/build/Release-iphoneos/Runner.app
+        ls ios/build/Release-iphoneos
+        
+    # Paso 8: Empaquetar IPA
     - name: Package IPA
       run: |
         mkdir -p build/ios/ipa/Payload
@@ -97,7 +103,7 @@ jobs:
         cd build/ios/ipa
         zip -r Runner.ipa Payload
         
-    # Paso 8: Subir artefacto
+    # Paso 9: Subir artefacto
     - name: Upload IPA
       uses: actions/upload-artifact@v4
       with:
