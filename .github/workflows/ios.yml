@@ -3,39 +3,38 @@ name: Flutter iOS Build
 on:
   push:
     branches:
-      - main
+      - main  # Cambia a la rama que uses para producción
   pull_request:
     branches:
-      - main
+      - main  # Para que se ejecute en pull requests también
 
 jobs:
   build:
-    runs-on: macos-latest
+    runs-on: macos-latest  # Usar runner de macOS para compilar para iOS
 
     steps:
     - name: Checkout Repository
-      uses: actions/checkout@v4
+      uses: actions/checkout@v4  # Usar la última versión de esta acción
 
     - name: Set up Flutter
       uses: subosito/flutter-action@v2
       with:
-        flutter-version: '3.10.4'  # Usar una versión estable que soporte Dart 3.5.3+
+        flutter-version: '3.10.4'  # Especifica la versión de Flutter que necesitas
 
     - name: Check Flutter and Dart version
       run: |
-        flutter --version
-        dart --version
+        flutter --version  # Verificar la versión de Flutter
+        dart --version    # Verificar la versión de Dart
 
     - name: Install Dependencies
       run: |
-        flutter pub get
-        flutter doctor
+        flutter pub get  # Instalar las dependencias
 
     - name: Build iOS
-      run: flutter build ios --release
+      run: flutter build ios --release  # Compilar para iOS en modo release
 
     - name: Upload IPA as artifact
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v4  # Usar la versión más reciente
       with:
         name: app-ios
-        path: build/ios/iphoneos/Runner.ipa
+        path: build/ios/iphoneos/Runner.ipa  # Especifica el archivo IPA que se genera
