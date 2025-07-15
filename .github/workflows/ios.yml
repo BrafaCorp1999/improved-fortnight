@@ -9,47 +9,38 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     
-    # Paso 1: Instalar Flutter con configuración explícita del PATH
-    - name: Install Flutter
+    # Paso 1: Configuración inicial
+    - name: Set up Flutter
       run: |
         git clone https://github.com/flutter/flutter.git -b stable --depth 1
-        FLUTTER_PATH="$GITHUB_WORKSPACE/flutter/bin"
-        echo "FLUTTER_PATH=$FLUTTER_PATH" >> $GITHUB_ENV
-        echo "$FLUTTER_PATH" >> $GITHUB_PATH
-        export PATH="$FLUTTER_PATH:$PATH"
-        $FLUTTER_PATH/flutter precache --ios
-        $FLUTTER_PATH/flutter --version
+        echo "$GITHUB_WORKSPACE/flutter/bin" >> $GITHUB_PATH
+        flutter --version
         
-    # Paso 2: Verificar instalación
-    - name: Verify Flutter
+    # Paso 2: Regenerar estructura iOS
+    - name: Generate iOS files
       run: |
-        echo "PATH: $PATH"
-        which flutter
-        flutter doctor -v
+        flutter clean
+        rm -rf ios .ios
+        flutter create --platforms ios --project-name wink .
         
-    # Paso 3: Configurar Xcode
-    - name: Set up Xcode
+    # Paso 3: Configurar entorno iOS
+    - name: Set up iOS environment
       run: |
         sudo xcode-select --switch /Applications/Xcode.app
         sudo xcodebuild -runFirstLaunch
         
-    # Paso 4: Generar archivos iOS
-    - name: Generate iOS files
+    # Paso 4: Obtener dependencias
+    - name: Get dependencies
       run: |
         flutter pub get
-        flutter create --platforms ios .
-        
-    # Paso 5: Instalar dependencias iOS
-    - name: Install iOS dependencies
-      run: |
         cd ios
         pod install --repo-update
         
-    # Paso 6: Build IPA
+    # Paso 5: Build IPA
     - name: Build IPA
       run: flutter build ios --release --no-codesign
       
-    # Paso 7: Subir artefacto
+    # Paso 6: Subir artefacto
     - uses: actions/upload-artifact@v4
       with:
         name: app-ipa
