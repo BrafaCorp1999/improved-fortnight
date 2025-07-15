@@ -11,31 +11,40 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
       
-    - name: Setup Flutter
-      uses: subosito/flutter-action@v2
-      with:
-        flutter-version: '3.22.4'
-        channel: 'stable'
-        cache: true
-        cache-key: 'flutter-3.22.4'
-        
-    - name: Install CocoaPods
+    # Paso 1: Instalar Flutter manualmente (solución garantizada)
+    - name: Install Flutter
       run: |
-        sudo gem install cocoapods -v 1.12.1
-        pod setup
+        echo "=== Descargando Flutter ==="
+        FLUTTER_VERSION="3.22.4"
+        curl -L https://storage.googleapis.com/flutter_infra_release/releases/stable/macos/flutter_macos_arm64_${FLUTTER_VERSION}-stable.zip -o flutter.zip
+        unzip flutter.zip -d ~
+        echo "=== Configurando PATH ==="
+        echo "$HOME/flutter/bin" >> $GITHUB_PATH
+        echo "::add-path::$HOME/flutter/bin"
+        flutter --version
+        flutter precache --ios
         
+    # Paso 2: Configurar Xcode
     - name: Setup Xcode
       run: |
         sudo xcode-select --switch /Applications/Xcode.app
         sudo xcodebuild -runFirstLaunch
         
+    # Paso 3: Instalar CocoaPods
+    - name: Install CocoaPods
+      run: |
+        sudo gem install cocoapods -v 1.12.1
+        pod setup
+        
+    # Paso 4: Obtener dependencias
     - name: Get dependencies
       run: |
         flutter pub get
         cd ios
         pod install --repo-update
         
-    - name: Build iOS (Release)
+    # Paso 5: Construir IPA
+    - name: Build iOS
       run: |
         flutter build ios --release --no-codesign --verbose
         cd build/ios/iphoneos
@@ -43,7 +52,8 @@ jobs:
         cp -r Runner.app Payload/
         zip -r Runner.ipa Payload
         
-    - name: Upload IPA artifact
+    # Paso 6: Subir artefacto
+    - name: Upload IPA
       uses: actions/upload-artifact@v4
       with:
         name: app-ipa
