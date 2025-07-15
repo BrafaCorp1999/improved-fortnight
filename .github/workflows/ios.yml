@@ -9,16 +9,29 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     
-    # Paso crucial: Instala Flutter con la versión específica que necesitas
-    - name: Set up Flutter
-      run: |
-        git clone https://github.com/flutter/flutter.git -b stable --depth 1
-        echo "$GITHUB_WORKSPACE/flutter/bin" >> $GITHUB_PATH
-        
-    - run: flutter --version  # Verifica la versión instalada
-    - run: flutter pub get
-    - run: flutter build ios --release --no-codesign
+    # Paso 1: Configurar Flutter con la versión exacta que necesitas
+    - uses: subosito/flutter-action@v2
+      with:
+        channel: 'stable'
+        flutter-version: '3.22.4'  # Versión que incluye Dart 3.5.3+
+        cache: true
+        cache-version: 'v3.22.4'
     
+    # Paso 2: Verificar versiones (para diagnóstico)
+    - name: Verify versions
+      run: |
+        flutter --version
+        dart --version
+    
+    # Paso 3: Obtener dependencias
+    - name: Get dependencies
+      run: flutter pub get
+    
+    # Paso 4: Build iOS
+    - name: Build IPA
+      run: flutter build ios --release --no-codesign
+    
+    # Paso 5: Subir artefacto
     - uses: actions/upload-artifact@v4
       with:
         name: app-ipa
