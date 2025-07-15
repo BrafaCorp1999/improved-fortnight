@@ -9,39 +9,36 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     
-    # Paso 1: Instalar Flutter usando método garantizado
+    # Paso 1: Instalar Flutter usando el método directo de clonación
     - name: Install Flutter
       run: |
-        echo "=== Descargando Flutter ==="
-        # Descargar usando la URL oficial de GitHub
-        FLUTTER_VERSION="3.22.4"
-        curl -L https://github.com/flutter/flutter/releases/download/${FLUTTER_VERSION}-stable/flutter_macos_${FLUTTER_VERSION}-stable.zip -o flutter.zip --retry 3 --retry-delay 5
-        echo "=== Verificando integridad del archivo ==="
-        unzip -t flutter.zip
-        echo "=== Descomprimiendo ==="
-        unzip flutter.zip -d ~
-        echo "=== Configurando PATH ==="
+        echo "=== Clonando repositorio de Flutter ==="
+        git clone https://github.com/flutter/flutter.git --depth 1 -b stable ~/flutter
+        
+        echo "=== Configurando entorno ==="
         echo "$HOME/flutter/bin" >> $GITHUB_PATH
         export PATH="$HOME/flutter/bin:$PATH"
+        
         echo "=== Verificando instalación ==="
         ls -la ~/flutter/bin
         ~/flutter/bin/flutter --version
         ~/flutter/bin/flutter precache --ios
         
-    # Resto del workflow permanece igual...
+    # Paso 2: Configurar Xcode
     - name: Set up Xcode
       run: |
         sudo xcode-select --switch /Applications/Xcode.app
         sudo xcodebuild -runFirstLaunch
         
-    - name: Generate iOS files
+    # Paso 3: Configurar entorno iOS
+    - name: Set up iOS
       run: |
+        echo "=== Regenerando estructura iOS ==="
         flutter clean
         rm -rf ios .ios
         flutter create --platforms ios --project-name wink .
         
-    - name: Configure iOS environment
-      run: |
+        echo "=== Configurando Podfile ==="
         cd ios
         echo "platform :ios, '12.0'" > Podfile
         echo "target 'Runner' do" >> Podfile
@@ -49,16 +46,22 @@ jobs:
         echo "  pod 'Firebase/CoreOnly', '10.15.0'" >> Podfile
         echo "end" >> Podfile
         
+    # Paso 4: Instalar dependencias
     - name: Install dependencies
       run: |
+        echo "=== Obteniendo dependencias ==="
         flutter pub get
         cd ios
         pod repo update
         pod install --repo-update
         
+    # Paso 5: Construir IPA
     - name: Build IPA
-      run: flutter build ios --release --no-codesign
+      run: |
+        echo "=== Construyendo IPA ==="
+        flutter build ios --release --no-codesign
         
+    # Paso 6: Subir artefacto
     - uses: actions/upload-artifact@v4
       with:
         name: app-ipa
