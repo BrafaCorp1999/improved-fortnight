@@ -9,56 +9,59 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     
-    # Paso 1: Configurar Flutter
-    - name: Set up Flutter
+    # Paso 1: Instalar Flutter usando método alternativo
+    - name: Install Flutter (Alternative Method)
       run: |
-        git clone https://github.com/flutter/flutter.git -b stable --depth 1
-        echo "$GITHUB_WORKSPACE/flutter/bin" >> $GITHUB_PATH
-        flutter --version
-        flutter precache --ios
+        echo "=== Descargando Flutter ==="
+        FLUTTER_VERSION="3.22.4"
+        curl -L https://storage.googleapis.com/flutter_infra_release/releases/stable/macos/flutter_macos_${FLUTTER_VERSION}-stable.zip -o flutter.zip
+        unzip flutter.zip -d ~
+        echo "=== Configurando PATH ==="
+        echo "$HOME/flutter/bin" >> $GITHUB_PATH
+        export PATH="$HOME/flutter/bin:$PATH"
+        echo "=== Verificando instalación ==="
+        ~/flutter/bin/flutter --version
+        ~/flutter/bin/flutter precache --ios
         
-    # Paso 2: Configurar iOS
-    - name: Set up iOS
+    # Paso 2: Configurar Xcode
+    - name: Set up Xcode
       run: |
         sudo xcode-select --switch /Applications/Xcode.app
         sudo xcodebuild -runFirstLaunch
         
-    # Paso 3: Actualizar Podfile
-    - name: Update Podfile
+    # Paso 3: Regenerar estructura iOS
+    - name: Generate iOS files
       run: |
-        echo "=== Actualizando Podfile ==="
+        flutter clean
+        rm -rf ios .ios
+        flutter create --platforms ios --project-name wink .
+        
+    # Paso 4: Configurar Podfile
+    - name: Configure iOS environment
+      run: |
         cd ios
-        # Asegurar platform iOS 12.0 o superior
-        sed -i '' "s/platform :ios.*/platform :ios, '12.0'/" Podfile
-        # Agregar configuración de Firebase
-        echo "
-        post_install do |installer|
-          installer.pods_project.targets.each do |target|
-            target.build_configurations.each do |config|
-              config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '12.0'
-              config.build_settings['ENABLE_BITCODE'] = 'NO'
-            end
-          end
-        end
-        " >> Podfile
+        echo "platform :ios, '12.0'" > Podfile
+        echo "target 'Runner' do" >> Podfile
+        echo "  use_frameworks!" >> Podfile
+        echo "  pod 'Firebase/CoreOnly', '10.15.0'" >> Podfile
+        echo "  pod 'Firebase/Firestore', '10.15.0'" >> Podfile
+        # Agrega aquí otros pods de Firebase que necesites
+        echo "end" >> Podfile
         cat Podfile
         
-    # Paso 4: Obtener dependencias
-    - name: Get dependencies
+    # Paso 5: Instalar dependencias
+    - name: Install dependencies
       run: |
-        echo "=== Obteniendo dependencias ==="
         flutter pub get
         cd ios
         pod repo update
         pod install --repo-update
         
-    # Paso 5: Build IPA
+    # Paso 6: Build IPA
     - name: Build IPA
-      run: |
-        echo "=== Construyendo IPA ==="
-        flutter build ios --release --no-codesign
+      run: flutter build ios --release --no-codesign
         
-    # Paso 6: Subir artefacto
+    # Paso 7: Subir artefacto
     - uses: actions/upload-artifact@v4
       with:
         name: app-ipa
