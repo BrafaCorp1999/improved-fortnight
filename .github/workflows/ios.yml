@@ -24,11 +24,6 @@ jobs:
     - name: Clean Flutter cache
       run: flutter clean  # Limpiar el caché de Flutter para evitar versiones antiguas
 
-    - name: Install Dart SDK 3.5.3 or newer
-      run: |
-        brew install dart@3.5.3  # Instalamos Dart 3.5.3 o superior
-        dart --version  # Verificar la versión instalada de Dart
-
     - name: Ensure Flutter is on the stable channel
       run: flutter channel stable  # Asegurarse de que estamos usando el canal estable
 
