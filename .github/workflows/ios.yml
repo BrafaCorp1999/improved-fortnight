@@ -1,10 +1,6 @@
-name: Flutter iOS Build with Firebase
+name: Flutter iOS Build
 
 on: [push]
-
-env:
-  FIREBASE_APP_ID: ${{ secrets.FIREBASE_APP_ID }}
-  FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
 
 jobs:
   build:
@@ -20,10 +16,8 @@ jobs:
       with:
         flutter-version: '3.22.4'
         channel: 'stable'
-        
-    - name: Install Firebase CLI
-      run: |
-        curl -sL https://firebase.tools | bash
+        cache: true
+        cache-key: 'flutter-3.22.4'
         
     - name: Install CocoaPods
       run: |
@@ -41,11 +35,17 @@ jobs:
         cd ios
         pod install --repo-update
         
-    - name: Build and Distribute
+    - name: Build iOS (Release)
       run: |
-        flutter build ios --release --no-codesign
-        cd ios
-        fastlane run firebase_app_distribution \
-          app:$FIREBASE_APP_ID \
-          firebase_cli_token:$FIREBASE_TOKEN \
-          groups: testers
+        flutter build ios --release --no-codesign --verbose
+        cd build/ios/iphoneos
+        mkdir -p Payload
+        cp -r Runner.app Payload/
+        zip -r Runner.ipa Payload
+        
+    - name: Upload IPA artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: app-ipa
+        path: build/ios/iphoneos/Runner.ipa
+        retention-days: 1
