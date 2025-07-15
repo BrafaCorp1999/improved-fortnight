@@ -21,6 +21,12 @@ jobs:
       with:
         flutter-version: '3.10.4'  # Especifica la versión de Flutter que necesitas
 
+    - name: Clean Flutter cache
+      run: flutter clean  # Limpiar el caché de Flutter para evitar versiones antiguas
+
+    - name: Ensure Flutter is on the stable channel
+      run: flutter channel stable  # Asegurarse de que estamos usando el canal estable
+
     - name: Check Flutter and Dart version
       run: |
         flutter --version  # Verificar la versión de Flutter
