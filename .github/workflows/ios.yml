@@ -17,8 +17,8 @@ jobs:
         echo "=== Instalando Flutter ==="
         # Descargar Flutter si no está instalado
         git clone https://github.com/flutter/flutter.git -b stable $HOME/flutter
-        # Actualizar el PATH usando archivos de entorno
-        echo "$HOME/flutter/bin" >> $GITHUB_ENV  # Cambiar a usar GITHUB_ENV en lugar de add-path
+        # Actualizar el PATH utilizando el archivo de entorno correctamente
+        echo "flutter/bin" >> $GITHUB_PATH
         flutter --version  # Verificar que Flutter esté correctamente instalado
 
     # Paso 2: Configurar Xcode
