@@ -11,12 +11,14 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    # Paso 1: Verificar y configurar Flutter
-    - name: Check Flutter installation
+    # Paso 1: Instalar Flutter (si no está instalado)
+    - name: Install Flutter
       run: |
-        flutter --version  # Verificar la versión de Flutter
-        flutter channel stable  # Asegurarse de que estamos en el canal stable
-        flutter upgrade  # Actualizar Flutter si es necesario
+        echo "=== Instalando Flutter ==="
+        # Descargar Flutter si no está instalado
+        git clone https://github.com/flutter/flutter.git -b stable $HOME/flutter
+        export PATH="$HOME/flutter/bin:$PATH"
+        flutter --version  # Verificar que Flutter esté correctamente instalado
 
     # Paso 2: Configurar Xcode
     - name: Setup Xcode
