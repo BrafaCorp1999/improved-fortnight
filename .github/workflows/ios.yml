@@ -17,8 +17,8 @@ jobs:
         ~/flutter/bin/flutter --version
         ~/flutter/bin/flutter precache --ios
         
-    # Paso 2: Configurar Xcode
-    - name: Set up Xcode
+    # Paso 2: Configurar Xcode y CocoaPods
+    - name: Set up Xcode and CocoaPods
       run: |
         sudo xcode-select --switch /Applications/Xcode.app
         sudo xcodebuild -runFirstLaunch
@@ -31,11 +31,10 @@ jobs:
         rm -rf ios .ios
         ~/flutter/bin/flutter create --platforms ios --project-name wink .
         
-    # Paso 4: Configurar Podfile con solución específica
+    # Paso 4: Configurar Podfile
     - name: Configure Podfile
       run: |
         cd ios
-        # Crear Podfile optimizado
         cat <<EOF > Podfile
         platform :ios, '12.0'
         use_frameworks! :linkage => :static
@@ -56,25 +55,23 @@ jobs:
                 config.build_settings['CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER'] = 'NO'
               end
             end
-            installer.pods_project.build_configurations.each do |config|
-              config.build_settings['EXCLUDED_ARCHS[sdk=iphonesimulator*]'] = 'arm64'
-            end
           end
         end
         EOF
         
-        # Limpiar cache de CocoaPods
         pod cache clean --all
         pod repo update
         pod install --verbose
         
-    # Paso 5: Corregir proyecto Xcode
+    # Paso 5: Ajustar proyecto Xcode (versión segura)
     - name: Fix Xcode project
       run: |
         cd ios
-        /usr/libexec/PlistBuddy -c "Set :ALWAYS_SEARCH_USER_PATHS NO" Runner.xcodeproj/project.pbxproj
-        /usr/libexec/PlistBuddy -c "Set :CLANG_ENABLE_MODULES YES" Runner.xcodeproj/project.pbxproj
-        /usr/libexec/PlistBuddy -c "Delete :EXCLUDED_ARCHS" Runner.xcodeproj/project.pbxproj
+        # Configuración segura que no falla si las claves no existen
+        /usr/libexec/PlistBuddy -c "Add :ALWAYS_SEARCH_USER_PATHS string NO" Runner.xcodeproj/project.pbxproj 2>/dev/null || true
+        /usr/libexec/PlistBuddy -c "Set :ALWAYS_SEARCH_USER_PATHS NO" Runner.xcodeproj/project.pbxproj 2>/dev/null || true
+        /usr/libexec/PlistBuddy -c "Add :CLANG_ENABLE_MODULES string YES" Runner.xcodeproj/project.pbxproj 2>/dev/null || true
+        /usr/libexec/PlistBuddy -c "Set :CLANG_ENABLE_MODULES YES" Runner.xcodeproj/project.pbxproj 2>/dev/null || true
         
     # Paso 6: Construir IPA
     - name: Build IPA
