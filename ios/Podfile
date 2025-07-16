@@ -1,7 +1,9 @@
 platform :ios, '12.0'
 
 flutter_application_path = '../'
-load File.join(File.dirname(__FILE__), 'Flutter', 'podhelper.rb')
+
+# Cambié esta línea para que apunte correctamente al archivo podhelper.rb
+load File.expand_path('../Flutter/podhelper.rb', __dir__)
 
 install! 'cocoapods', :disable_input_output_paths => true
 
@@ -12,13 +14,10 @@ target 'Runner' do
   # Usar el helper para instalar los pods de Flutter
   install_all_flutter_pods(flutter_application_path)
 
-  # Firebase pods
   pod 'Firebase/Core', '6.34.0'
   pod 'Firebase/Auth', '6.34.0'
   pod 'Firebase/Firestore', '6.34.0'
   pod 'Firebase/Storage', '6.34.0'
-
-  # Agrega aquí otras dependencias de pods que puedas necesitar
 end
 
 post_install do |installer|
