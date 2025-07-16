@@ -18,7 +18,7 @@ jobs:
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.10.0'  # Puedes ajustar la versión de Flutter aquí si es necesario
+          flutter-version: '3.10.0'  # Ajusta la versión de Flutter si es necesario
 
       - name: Install dependencies
         run: |
@@ -37,7 +37,7 @@ jobs:
           xcodebuild -exportArchive -archivePath $PWD/build/Runner.xcarchive -exportOptionsPlist $PWD/ExportOptions.plist -exportPath $PWD/build/ipa
 
       - name: Upload IPA to Artifacts
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3  # Actualizamos la versión a v3
         with:
           name: ipa
           path: ios/build/ipa/Runner.ipa
