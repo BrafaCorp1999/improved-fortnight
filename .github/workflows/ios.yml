@@ -49,7 +49,7 @@ jobs:
 
     # Paso 7: Subir el IPA como artefacto (con la versión correcta)
     - name: Upload IPA as artifact
-      uses: actions/upload-artifact@v2.3.0  # Usar v2.3.0 que está soportado y no descontinuado
+      uses: actions/upload-artifact@v4  # Usamos la versión v4, que es la más actual y no descontinuada
       with:
         name: Runner.ipa
         path: build/ios/ipa/Runner.ipa  # Subir el IPA generado para su distribución
