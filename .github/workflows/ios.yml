@@ -1,43 +1,40 @@
-name: Build iOS IPA
+name: Build Flutter iOS App
 
 on:
   push:
-    branches:
-      - main
-  pull_request:
     branches:
       - main
 
 jobs:
   build:
     runs-on: macos-latest
-    steps:
-      - name: Check out the repository
-        uses: actions/checkout@v2
 
+    steps:
+      # Paso 1: Checkout del código fuente
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Paso 2: Configurar Flutter
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.10.0'  # Ajusta la versión de Flutter si es necesario
+          flutter-version: 'latest'
 
+      # Paso 3: Instalar dependencias
       - name: Install dependencies
         run: |
           flutter pub get
           cd ios
           pod install
 
-      - name: Build the app
+      # Paso 4: Construir la app iOS en release (sin firmar el código)
+      - name: Build iOS release
         run: |
           flutter build ios --release --no-codesign
 
-      - name: Export IPA
-        run: |
-          cd ios
-          xcodebuild -workspace Runner.xcworkspace -scheme Runner -configuration Release -archivePath $PWD/build/Runner.xcarchive archive
-          xcodebuild -exportArchive -archivePath $PWD/build/Runner.xcarchive -exportOptionsPlist $PWD/ExportOptions.plist -exportPath $PWD/build/ipa
-
-      - name: Upload IPA to Artifacts
-        uses: actions/upload-artifact@v3  # Actualizamos la versión a v3
+      # Paso 5: Subir el archivo .ipa como artefacto
+      - name: Upload .ipa as artifact
+        uses: actions/upload-artifact@v4
         with:
-          name: ipa
-          path: ios/build/ipa/Runner.ipa
+          name: ios-release
+          path: build/ios/iphoneos/Runner.app
