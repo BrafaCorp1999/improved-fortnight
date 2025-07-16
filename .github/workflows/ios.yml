@@ -87,26 +87,27 @@ jobs:
           CODE_SIGN_IDENTITY="" \
           CODE_SIGNING_REQUIRED=NO \
           CODE_SIGNING_ALLOWED=NO \
-          clean build | tee xcodebuild.log
+          clean build
         
-    # Paso 7: Verificar existencia de Runner.app
-    - name: Verify Runner.app location
-      run: |
-        # Listar todo el contenido de la carpeta build
-        echo "Listing contents of ios/build/"
-        ls ios/build/
-        # Listar todos los archivos para identificar si Runner.app está en otra ubicación
-        ls ios/build/*/Runner.app || echo "Runner.app no encontrado"
+        # Verificar si Runner.app se generó correctamente en cualquier subdirectorio
+        echo "Listing contents of build directory:"
+        ls ios/build
         
-    # Paso 8: Empaquetar IPA
+    # Paso 7: Empaquetar IPA
     - name: Package IPA
       run: |
-        mkdir -p build/ios/ipa/Payload
-        cp -r ios/build/Release-iphoneos/Runner.app build/ios/ipa/Payload
-        cd build/ios/ipa
-        zip -r Runner.ipa Payload
+        # Verificar que Runner.app se ha generado antes de empaquetar
+        if [ -d "ios/build/Release-iphoneos/Runner.app" ]; then
+          mkdir -p build/ios/ipa/Payload
+          cp -r ios/build/Release-iphoneos/Runner.app build/ios/ipa/Payload
+          cd build/ios/ipa
+          zip -r Runner.ipa Payload
+        else
+          echo "Error: Runner.app not found. Build step may have failed."
+          exit 1
+        fi
         
-    # Paso 9: Subir artefacto
+    # Paso 8: Subir artefacto
     - name: Upload IPA
       uses: actions/upload-artifact@v4
       with:
