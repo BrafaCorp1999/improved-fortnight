@@ -8,7 +8,7 @@ jobs:
     
     steps:
     - name: Checkout code
-      uses: actions/checkout@v2  # Usar la versión estable v2
+      uses: actions/checkout@v2
     
     # Paso 1: Configurar Flutter
     - name: Set up Flutter
@@ -36,6 +36,7 @@ jobs:
     - name: Clean and Configure Podfile
       run: |
         cd ios
+        # Limpiar caché de pods y actualizar repositorios
         pod cache clean --all
         pod repo update
         pod install --repo-update --verbose
@@ -47,7 +48,7 @@ jobs:
         ls ios/build/Release-iphoneos/
         ls ios/build/Release-iphoneos/Runner.app
         
-    # Paso 6: Construir IPA (con detalles adicionales de Xcode)
+    # Paso 6: Construir IPA
     - name: Build IPA
       run: |
         cd ios
