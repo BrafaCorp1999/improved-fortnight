@@ -17,39 +17,39 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v2
 
-    # Paso 2: Configuración de Flutter (usando una versión que incluya Dart >= 3.5.3)
+    # Paso 2: Configuración de Flutter (usar una versión específica que sea compatible con Dart 3.5.3 o superior)
     - name: Set up Flutter
       uses: subosito/flutter-action@v2
       with:
-        flutter-version: 'stable'  # Aquí usamos 'stable' que debería ser compatible con Dart 3.5.3 o superior
+        flutter-version: '3.10.0'  # Aquí usamos la versión exacta de Flutter que es compatible con Dart >= 3.5.3
 
-    # Paso 3: Instalar dependencias
+    # Paso 3: Instalar dependencias con Flutter
     - name: Install dependencies
       run: |
         flutter pub get  # Instalar todas las dependencias
 
-    # Paso 4: Limpiar y configurar el Podfile (si no está hecho manualmente)
+    # Paso 4: Configurar y limpiar el Podfile
     - name: Clean and Configure Podfile
       run: |
         cd ios
-        pod install
+        pod install  # Asegúrate de que todas las dependencias de CocoaPods estén instaladas correctamente
 
-    # Paso 5: Build iOS (Generar el archivo IPA)
+    # Paso 5: Generar el build iOS (IPA)
     - name: Build iOS app
       run: |
-        flutter build ios --release --no-codesign
+        flutter build ios --release --no-codesign  # Crear el build de iOS sin firmar
 
     # Paso 6: Empaquetar el archivo IPA
     - name: Package the IPA
       run: |
-        mkdir -p build/ios/ipa
-        cp -r ios/build/ios/iphoneos/Runner.app build/ios/ipa/
+        mkdir -p build/ios/ipa  # Crear directorio para el IPA
+        cp -r ios/build/ios/iphoneos/Runner.app build/ios/ipa/  # Copiar el app generado al directorio de IPA
         cd build/ios/ipa
-        zip -r Runner.ipa Runner.app
+        zip -r Runner.ipa Runner.app  # Comprimir la app en un archivo IPA
 
     # Paso 7: Subir el IPA como artefacto
     - name: Upload IPA as artifact
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v3
       with:
         name: Runner.ipa
-        path: build/ios/ipa/Runner.ipa
+        path: build/ios/ipa/Runner.ipa  # Subir el IPA generado para su distribución
