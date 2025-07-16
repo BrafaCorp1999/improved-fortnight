@@ -49,7 +49,7 @@ jobs:
 
     # Paso 7: Subir el IPA como artefacto
     - name: Upload IPA as artifact
-      uses: actions/upload-artifact@v3.2.0
+      uses: actions/upload-artifact@v4
       with:
         name: Runner.ipa
         path: build/ios/ipa/Runner.ipa
