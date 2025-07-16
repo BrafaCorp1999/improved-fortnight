@@ -47,9 +47,9 @@ jobs:
         cd build/ios/ipa
         zip -r Runner.ipa Runner.app  # Comprimir la app en un archivo IPA
 
-    # Paso 7: Subir el IPA como artefacto
+    # Paso 7: Subir el IPA como artefacto (con la versión correcta)
     - name: Upload IPA as artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v3.3.0  # Actualizamos a la versión 3.3.0 o superior
       with:
         name: Runner.ipa
         path: build/ios/ipa/Runner.ipa  # Subir el IPA generado para su distribución
