@@ -14,17 +14,17 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
 
-    # Paso 2: Instalar Flutter 3.13.0
-    - name: Set up Flutter
+    # Paso 2: Instalar Flutter 3.10.0 directamente
+    - name: Set up Flutter 3.10.0
       uses: subosito/flutter-action@v2
       with:
-        flutter-version: '3.13.0'
+        flutter-version: '3.10.0'
 
-    # Paso 3: Actualizar Dart SDK manualmente
-    - name: Update Dart SDK
+    # Paso 3: Verificar la versión de Flutter y Dart SDK
+    - name: Verify Flutter and Dart versions
       run: |
-        flutter upgrade
-        flutter doctor
+        flutter --version
+        dart --version
 
     # Paso 4: Limpiar caché de Flutter y Dart
     - name: Clean Flutter and Dart cache
@@ -32,23 +32,17 @@ jobs:
         flutter pub cache repair
         flutter clean
 
-    # Paso 5: Verificar las versiones de Flutter y Dart SDK
-    - name: Verify Flutter and Dart versions
-      run: |
-        flutter --version
-        dart --version
-
-    # Paso 6: Instalar dependencias de Flutter
+    # Paso 5: Instalar dependencias de Flutter
     - name: Install dependencies
       run: |
         flutter pub get
 
-    # Paso 7: Generar el archivo IPA
+    # Paso 6: Generar el archivo IPA
     - name: Build IPA
       run: |
         flutter build ios --release --no-codesign
 
-    # Paso 8: Subir artefactos generados (IPA)
+    # Paso 7: Subir artefactos generados (IPA)
     - name: Upload IPA as an artifact
       uses: actions/upload-artifact@v4
       with:
