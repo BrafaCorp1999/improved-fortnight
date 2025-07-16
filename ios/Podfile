@@ -2,21 +2,24 @@ platform :ios, '12.0'
 
 flutter_application_path = '../'
 
-# Cargar Flutter automáticamente usando la configuración estándar
-load File.join(flutter_application_path, '.ios', 'Flutter', 'podhelper.rb')
+# Eliminamos la línea de carga de podhelper.rb
+# load File.join(flutter_application_path, '.ios', 'Flutter', 'podhelper.rb')
 
 target 'Runner' do
   use_frameworks!
   use_modular_headers!
 
-  # Usar el helper para instalar los pods de Flutter
-  install_all_flutter_pods(flutter_application_path)
+  # Instalar los pods de Flutter de manera manual
+  flutter_pods = File.join(flutter_application_path, '.ios', 'Flutter', 'engine', 'flutter_podspec.podspec')
+  pod 'Flutter', :path => flutter_pods
 
   # Firebase pods
   pod 'Firebase/Core', '6.34.0'
   pod 'Firebase/Auth', '6.34.0'
   pod 'Firebase/Firestore', '6.34.0'
   pod 'Firebase/Storage', '6.34.0'
+
+  # Agrega aquí otras dependencias de pods que puedas necesitar
 end
 
 post_install do |installer|
