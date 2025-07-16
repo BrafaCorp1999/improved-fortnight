@@ -8,7 +8,7 @@ jobs:
     
     steps:
     - name: Checkout code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
     
     # Paso 1: Configurar Flutter
     - name: Set up Flutter
@@ -25,22 +25,23 @@ jobs:
         sudo xcodebuild -runFirstLaunch
         sudo gem install cocoapods -v 1.12.1
         
-    # Paso 3: Regenerar proyecto iOS
+    # Paso 3: Limpiar y configurar Pods
+    - name: Clean and Configure Podfile
+      run: |
+        cd ios
+        # Asegurarte de que el Podfile está configurado correctamente
+        echo "platform :ios, '12.0'" > Podfile  # Configuramos la plataforma en 12.0
+        pod cache clean --all
+        pod repo update
+        pod install --repo-update --verbose
+
+    # Paso 4: Regenerar proyecto iOS
     - name: Recreate iOS project
       run: |
         ~/flutter/bin/flutter clean
         rm -rf ios .ios
         ~/flutter/bin/flutter create --platforms ios --project-name wink .
         
-    # Paso 4: Limpiar y configurar Pods
-    - name: Clean and Configure Podfile
-      run: |
-        cd ios
-        # Limpiar caché de pods y actualizar repositorios
-        pod cache clean --all
-        pod repo update
-        pod install --repo-update --verbose
-
     # Paso 5: Verificar existencia del directorio de salida
     - name: Verify Output Directory Existence
       run: |
