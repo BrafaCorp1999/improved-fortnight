@@ -17,11 +17,11 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v2
 
-    # Paso 2: Configuración de Flutter (usar una versión específica que sea compatible con Dart 3.5.3 o superior)
+    # Paso 2: Configuración de Flutter (usando Flutter 3.10.0 que trae Dart 3.5.3)
     - name: Set up Flutter
       uses: subosito/flutter-action@v2
       with:
-        flutter-version: '3.10.0'  # Aquí usamos la versión exacta de Flutter que es compatible con Dart >= 3.5.3
+        flutter-version: '3.10.0'  # Usar la versión específica de Flutter compatible con Dart 3.5.3
 
     # Paso 3: Instalar dependencias con Flutter
     - name: Install dependencies
@@ -49,7 +49,7 @@ jobs:
 
     # Paso 7: Subir el IPA como artefacto (con la versión correcta)
     - name: Upload IPA as artifact
-      uses: actions/upload-artifact@v4  # Usamos la versión v4, que es la más actual y no descontinuada
+      uses: actions/upload-artifact@v4  # Usamos la versión v4 de la acción
       with:
         name: Runner.ipa
         path: build/ios/ipa/Runner.ipa  # Subir el IPA generado para su distribución
