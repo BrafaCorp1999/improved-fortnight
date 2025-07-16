@@ -10,49 +10,48 @@ jobs:
     runs-on: macos-latest
 
     steps:
-    # Paso 1: Checkout del código
-    - name: Checkout code
-      uses: actions/checkout@v3
+      # Paso 1: Checkout del código
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-    # Paso 2: Instalar Flutter 3.10.0 y asegurarse de que use la versión de Dart correcta
-    - name: Set up Flutter 3.10.0
-      uses: subosito/flutter-action@v2
-      with:
-        flutter-version: '3.10.0'
+      # Paso 2: Instalar Flutter 3.10.0 y asegurarse de que use la versión de Dart correcta
+      - name: Set up Flutter 3.10.0
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.10.0'
 
-    # Paso 3: Verificar la versión de Flutter y Dart SDK
-    - name: Verify Flutter and Dart versions
-      run: |
-        flutter --version
-        dart --version
+      # Paso 3: Verificar la versión de Flutter y Dart SDK
+      - name: Verify Flutter and Dart versions
+        run: |
+          flutter --version
+          dart --version
 
-    # Paso 4: Limpiar caché de Flutter y Dart
-    - name: Clean Flutter and Dart cache
-      run: |
-        flutter pub cache repair
-        flutter clean
+      # Paso 4: Forzar actualización de Dart SDK y Flutter
+      - name: Update Dart SDK
+        run: |
+          flutter doctor
+          flutter upgrade
+          dart --version
 
-    # Paso 5: Instalar dependencias de Flutter
-    - name: Install dependencies
-      run: |
-        flutter pub get
+      # Paso 5: Limpiar caché de Flutter y Dart
+      - name: Clean Flutter and Dart cache
+        run: |
+          flutter pub cache repair
+          flutter clean
 
-    # Paso 6: Instalar dependencias de CocoaPods
-    - name: Install CocoaPods dependencies
-      run: |
-        cd ios
-        rm -rf Pods Podfile.lock
-        pod install
-        cd ..
+      # Paso 6: Instalar dependencias de Flutter
+      - name: Install dependencies
+        run: |
+          flutter pub get
 
-    # Paso 7: Generar el archivo IPA
-    - name: Build IPA
-      run: |
-        flutter build ios --release --no-codesign
+      # Paso 7: Generar el archivo IPA
+      - name: Build IPA
+        run: |
+          flutter build ios --release --no-codesign
 
-    # Paso 8: Subir artefactos generados (IPA)
-    - name: Upload IPA as an artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: ipa-file
-        path: build/ios/iphoneos/*.ipa
+      # Paso 8: Subir artefactos generados (IPA)
+      - name: Upload IPA as an artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ipa-file
+          path: build/ios/iphoneos/*.ipa
