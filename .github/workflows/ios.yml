@@ -17,7 +17,7 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v2
 
-    # Paso 2: Configuración de Flutter (usando Flutter 3.10.0 que trae Dart 3.5.3)
+    # Paso 2: Configuración de Flutter con la versión correcta (Flutter 3.10.0)
     - name: Set up Flutter
       uses: subosito/flutter-action@v2
       with:
