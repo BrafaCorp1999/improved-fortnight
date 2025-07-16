@@ -8,8 +8,8 @@ jobs:
     
     steps:
     - name: Checkout code
-      uses: actions/checkout@v2  # Asegúrate de que uses v2 para evitar problemas con versiones más recientes.
-
+      uses: actions/checkout@v2  # Usa la versión estable de checkout
+    
     # Paso 1: Configurar Flutter
     - name: Set up Flutter
       run: |
@@ -74,6 +74,9 @@ jobs:
         /usr/libexec/PlistBuddy -c "Set :ALWAYS_SEARCH_USER_PATHS NO" Runner.xcodeproj/project.pbxproj 2>/dev/null || true
         /usr/libexec/PlistBuddy -c "Add :CLANG_ENABLE_MODULES string YES" Runner.xcodeproj/project.pbxproj 2>/dev/null || true
         /usr/libexec/PlistBuddy -c "Set :CLANG_ENABLE_MODULES YES" Runner.xcodeproj/project.pbxproj 2>/dev/null || true
+        # Deshabilitar cualquier firma de código adicional en Xcode
+        /usr/libexec/PlistBuddy -c "Add :CODE_SIGNING_REQUIRED string NO" Runner.xcodeproj/project.pbxproj 2>/dev/null || true
+        /usr/libexec/PlistBuddy -c "Set :CODE_SIGNING_REQUIRED NO" Runner.xcodeproj/project.pbxproj 2>/dev/null || true
         
     # Paso 6: Construir IPA (con detalles adicionales de Xcode)
     - name: Build IPA
