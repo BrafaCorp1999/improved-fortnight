@@ -75,7 +75,13 @@ jobs:
         /usr/libexec/PlistBuddy -c "Add :CODE_SIGNING_ALLOWED string NO" Runner.xcodeproj/project.pbxproj 2>/dev/null || true
         /usr/libexec/PlistBuddy -c "Set :CODE_SIGNING_ALLOWED NO" Runner.xcodeproj/project.pbxproj 2>/dev/null || true
         
-    # Paso 6: Construir IPA (con detalles adicionales de Xcode)
+    # Paso 6: Comprobar la existencia de la carpeta de salida antes de la construcción
+    - name: Verify Output Directory Existence
+      run: |
+        ls ios/build/Release-iphoneos
+        ls ios/build/Release-iphoneos/Runner.app
+        
+    # Paso 7: Construir IPA (con detalles adicionales de Xcode)
     - name: Build IPA
       run: |
         cd ios
@@ -89,7 +95,7 @@ jobs:
           CODE_SIGNING_ALLOWED=NO \
           clean build
         
-    # Paso 7: Empaquetar IPA
+    # Paso 8: Empaquetar IPA
     - name: Package IPA
       run: |
         mkdir -p build/ios/ipa/Payload
@@ -97,7 +103,7 @@ jobs:
         cd build/ios/ipa
         zip -r Runner.ipa Payload
         
-    # Paso 8: Subir artefacto
+    # Paso 9: Subir artefacto
     - name: Upload IPA
       uses: actions/upload-artifact@v4
       with:
