@@ -2,5 +2,4 @@
 
 flutter_application_path = '../'
 
-# Asegúrate de que esta ruta sea válida en tu proyecto. Si no lo es, debes ajustarla.
-load File.join(File.dirname(__FILE__), 'Flutter', 'podhelper.rb')
+load File.expand_path('ios/Flutter/podhelper.rb', __dir__)
