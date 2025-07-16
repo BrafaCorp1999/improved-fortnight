@@ -2,4 +2,5 @@
 
 flutter_application_path = '../'
 
-load File.expand_path('ios/Flutter/podhelper.rb', __dir__)
+load File.expand_path('../Flutter/podhelper.rb', __dir__)
+
