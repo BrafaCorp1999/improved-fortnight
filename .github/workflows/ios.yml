@@ -17,11 +17,11 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v2
 
-    # Paso 2: Configuración de Flutter
+    # Paso 2: Configuración de Flutter (usando una versión que incluya Dart >= 3.5.3)
     - name: Set up Flutter
       uses: subosito/flutter-action@v2
       with:
-        flutter-version: '3.7.0'  # Especifica una versión estable de Flutter
+        flutter-version: 'stable'  # Aquí usamos 'stable' que debería ser compatible con Dart 3.5.3 o superior
 
     # Paso 3: Instalar dependencias
     - name: Install dependencies
