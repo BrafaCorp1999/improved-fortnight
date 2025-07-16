@@ -7,11 +7,10 @@ jobs:
     runs-on: macos-latest
     
     steps:
-    # Paso 1: Checkout code (Usar `v2` en lugar de `v4`)
     - name: Checkout code
-      uses: actions/checkout@v2  # Cambié v4 a v2 para evitar los errores
+      uses: actions/checkout@v2  # Asegúrate de que uses v2 para evitar problemas con versiones más recientes.
 
-    # Paso 2: Configurar Flutter
+    # Paso 1: Configurar Flutter
     - name: Set up Flutter
       run: |
         git clone https://github.com/flutter/flutter.git -b stable --depth 1 ~/flutter
@@ -19,21 +18,21 @@ jobs:
         ~/flutter/bin/flutter --version
         ~/flutter/bin/flutter precache --ios
         
-    # Paso 3: Configurar Xcode y CocoaPods
+    # Paso 2: Configurar Xcode y CocoaPods
     - name: Set up Xcode and CocoaPods
       run: |
         sudo xcode-select --switch /Applications/Xcode.app
         sudo xcodebuild -runFirstLaunch
         sudo gem install cocoapods -v 1.12.1
         
-    # Paso 4: Regenerar proyecto iOS
+    # Paso 3: Regenerar proyecto iOS
     - name: Recreate iOS project
       run: |
         ~/flutter/bin/flutter clean
         rm -rf ios .ios
         ~/flutter/bin/flutter create --platforms ios --project-name wink .
         
-    # Paso 5: Configurar Podfile
+    # Paso 4: Configurar Podfile
     - name: Configure Podfile
       run: |
         cd ios
@@ -61,12 +60,12 @@ jobs:
         end
         EOF
         
-        # Limpiar y reinstalar pods
+        # Limpiar caché y reinstalar dependencias de Pods
         pod cache clean --all
         pod repo update
         pod install --repo-update --verbose
         
-    # Paso 6: Ajustar proyecto Xcode (versión segura)
+    # Paso 5: Ajustar proyecto Xcode (versión segura)
     - name: Fix Xcode project
       run: |
         cd ios
@@ -76,7 +75,7 @@ jobs:
         /usr/libexec/PlistBuddy -c "Add :CLANG_ENABLE_MODULES string YES" Runner.xcodeproj/project.pbxproj 2>/dev/null || true
         /usr/libexec/PlistBuddy -c "Set :CLANG_ENABLE_MODULES YES" Runner.xcodeproj/project.pbxproj 2>/dev/null || true
         
-    # Paso 7: Construir IPA
+    # Paso 6: Construir IPA (con detalles adicionales de Xcode)
     - name: Build IPA
       run: |
         cd ios
@@ -90,7 +89,7 @@ jobs:
           CODE_SIGNING_ALLOWED=NO \
           clean build
         
-    # Paso 8: Empaquetar IPA
+    # Paso 7: Empaquetar IPA
     - name: Package IPA
       run: |
         mkdir -p build/ios/ipa/Payload
@@ -98,7 +97,7 @@ jobs:
         cd build/ios/ipa
         zip -r Runner.ipa Payload
         
-    # Paso 9: Subir artefacto
+    # Paso 8: Subir artefacto
     - name: Upload IPA
       uses: actions/upload-artifact@v4
       with:
