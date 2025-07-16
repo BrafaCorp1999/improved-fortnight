@@ -2,8 +2,8 @@ platform :ios, '12.0'
 
 flutter_application_path = '../'
 
-# Cambié esta línea para que apunte correctamente al archivo podhelper.rb
-load File.expand_path('../Flutter/podhelper.rb', __dir__)
+# Actualiza la ruta del archivo podhelper.rb de acuerdo con tu estructura de directorios
+load File.expand_path('Flutter/podhelper.rb', __dir__)
 
 install! 'cocoapods', :disable_input_output_paths => true
 
