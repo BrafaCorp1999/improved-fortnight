@@ -1,7 +1,10 @@
-name: Build Flutter iOS App
+name: Build iOS App
 
 on:
   push:
+    branches:
+      - main
+  pull_request:
     branches:
       - main
 
@@ -10,31 +13,43 @@ jobs:
     runs-on: macos-latest
 
     steps:
-      # Paso 1: Checkout del código fuente
-      - name: Checkout repository
-        uses: actions/checkout@v4
+    # Paso 1: Checkout del repositorio
+    - name: Checkout repository
+      uses: actions/checkout@v2
 
-      # Paso 2: Configurar Flutter
-      - name: Set up Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          flutter-version: 'stable' # Especifica una versión estable de Flutter
+    # Paso 2: Configuración de Flutter
+    - name: Set up Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        flutter-version: '3.7.0'  # Especifica una versión estable de Flutter
 
-      # Paso 3: Instalar dependencias
-      - name: Install dependencies
-        run: |
-          flutter pub get
-          cd ios
-          pod install
+    # Paso 3: Instalar dependencias
+    - name: Install dependencies
+      run: |
+        flutter pub get  # Instalar todas las dependencias
 
-      # Paso 4: Construir la app iOS en release (sin firmar el código)
-      - name: Build iOS release
-        run: |
-          flutter build ios --release --no-codesign
+    # Paso 4: Limpiar y configurar el Podfile (si no está hecho manualmente)
+    - name: Clean and Configure Podfile
+      run: |
+        cd ios
+        pod install
 
-      # Paso 5: Subir el archivo .ipa como artefacto
-      - name: Upload .ipa as artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: ios-release
-          path: build/ios/iphoneos/Runner.app
+    # Paso 5: Build iOS (Generar el archivo IPA)
+    - name: Build iOS app
+      run: |
+        flutter build ios --release --no-codesign
+
+    # Paso 6: Empaquetar el archivo IPA
+    - name: Package the IPA
+      run: |
+        mkdir -p build/ios/ipa
+        cp -r ios/build/ios/iphoneos/Runner.app build/ios/ipa/
+        cd build/ios/ipa
+        zip -r Runner.ipa Runner.app
+
+    # Paso 7: Subir el IPA a un servicio como Diawi
+    - name: Upload IPA to Diawi
+      uses: r0adkll/upload-artifact@v2
+      with:
+        name: Runner.ipa
+        path: build/ios/ipa/Runner.ipa
