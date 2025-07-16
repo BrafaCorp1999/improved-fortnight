@@ -1,10 +1,7 @@
-name: Build iOS App
+name: Build Flutter iOS App
 
 on:
   push:
-    branches:
-      - main
-  pull_request:
     branches:
       - main
 
@@ -13,43 +10,35 @@ jobs:
     runs-on: macos-latest
 
     steps:
-    # Paso 1: Checkout del repositorio
-    - name: Checkout repository
-      uses: actions/checkout@v2
+    # Paso 1: Checkout del código
+    - name: Checkout code
+      uses: actions/checkout@v3
 
     # Paso 2: Configuración de Flutter con la versión correcta (Flutter 3.10.0)
     - name: Set up Flutter
       uses: subosito/flutter-action@v2
       with:
-        flutter-version: '3.10.0'  # Usar la versión específica de Flutter compatible con Dart 3.5.3
+        flutter-version: '3.10.0'
 
-    # Paso 3: Instalar dependencias con Flutter
+    # Paso 3: Verificar la versión de Flutter y Dart
+    - name: Verify Flutter and Dart versions
+      run: |
+        flutter --version
+        dart --version
+
+    # Paso 4: Instalar dependencias de Flutter
     - name: Install dependencies
       run: |
-        flutter pub get  # Instalar todas las dependencias
+        flutter pub get
 
-    # Paso 4: Configurar y limpiar el Podfile
-    - name: Clean and Configure Podfile
+    # Paso 5: Generar el archivo IPA
+    - name: Build IPA
       run: |
-        cd ios
-        pod install  # Asegúrate de que todas las dependencias de CocoaPods estén instaladas correctamente
+        flutter build ios --release --no-codesign
 
-    # Paso 5: Generar el build iOS (IPA)
-    - name: Build iOS app
-      run: |
-        flutter build ios --release --no-codesign  # Crear el build de iOS sin firmar
-
-    # Paso 6: Empaquetar el archivo IPA
-    - name: Package the IPA
-      run: |
-        mkdir -p build/ios/ipa  # Crear directorio para el IPA
-        cp -r ios/build/ios/iphoneos/Runner.app build/ios/ipa/  # Copiar el app generado al directorio de IPA
-        cd build/ios/ipa
-        zip -r Runner.ipa Runner.app  # Comprimir la app en un archivo IPA
-
-    # Paso 7: Subir el IPA como artefacto (con la versión correcta)
-    - name: Upload IPA as artifact
-      uses: actions/upload-artifact@v4  # Usamos la versión v4 de la acción
+    # Paso 6: Subir artefactos generados (IPA)
+    - name: Upload IPA as an artifact
+      uses: actions/upload-artifact@v4
       with:
-        name: Runner.ipa
-        path: build/ios/ipa/Runner.ipa  # Subir el IPA generado para su distribución
+        name: ipa-file
+        path: build/ios/iphoneos/*.ipa
