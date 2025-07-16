@@ -1,57 +1,31 @@
-name: Build Flutter iOS App
+platform :ios, '12.0'
 
-on:
-  push:
-    branches:
-      - main
+flutter_application_path = '../'
 
-jobs:
-  build:
-    runs-on: macos-latest
+# Actualiza la ruta del archivo podhelper.rb de acuerdo con tu estructura de directorios
+load File.expand_path('Flutter/podhelper.rb', __dir__)
 
-    steps:
-    # Paso 1: Checkout del código
-    - name: Checkout code
-      uses: actions/checkout@v3
+install! 'cocoapods', :disable_input_output_paths => true
 
-    # Paso 2: Instalar Flutter 3.10.0 y asegurarse de que use la versión de Dart correcta
-    - name: Set up Flutter 3.10.0
-      uses: subosito/flutter-action@v2
-      with:
-        flutter-version: '3.10.0'
+target 'Runner' do
+  use_frameworks!
+  use_modular_headers!
 
-    # Paso 3: Verificar la versión de Flutter y Dart SDK
-    - name: Verify Flutter and Dart versions
-      run: |
-        flutter --version
-        dart --version
+  # Usar el helper para instalar los pods de Flutter
+  install_all_flutter_pods(flutter_application_path)
 
-    # Paso 4: Forzar actualización de Dart SDK (si es necesario)
-    - name: Update Dart SDK
-      run: |
-        flutter doctor
-        flutter upgrade
-        dart --version
+  pod 'Firebase/Core', '6.34.0'
+  pod 'Firebase/Auth', '6.34.0'
+  pod 'Firebase/Firestore', '6.34.0'
+  pod 'Firebase/Storage', '6.34.0'
+end
 
-    # Paso 5: Limpiar caché de Flutter y Dart
-    - name: Clean Flutter and Dart cache
-      run: |
-        flutter pub cache repair
-        flutter clean
-
-    # Paso 6: Instalar dependencias de Flutter
-    - name: Install dependencies
-      run: |
-        flutter pub get
-
-    # Paso 7: Generar el archivo IPA
-    - name: Build IPA
-      run: |
-        flutter build ios --release --no-codesign
-
-    # Paso 8: Subir artefactos generados (IPA)
-    - name: Upload IPA as an artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: ipa-file
-        path: build/ios/iphoneos/*.ipa
+post_install do |installer|
+  installer.pods_project.targets.each do |target|
+    target.build_configurations.each do |config|
+      config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '12.0'
+      config.build_settings['ENABLE_BITCODE'] = 'NO'
+      config.build_settings['EXCLUDED_ARCHS[sdk=iphonesimulator*]'] = 'arm64'
+    end
+  end
+end
