@@ -8,7 +8,7 @@ jobs:
     
     steps:
     - name: Checkout code
-      uses: actions/checkout@v2  # Usa la versión estable de checkout
+      uses: actions/checkout@v2  # Usar la versión estable v2
     
     # Paso 1: Configurar Flutter
     - name: Set up Flutter
@@ -69,14 +69,11 @@ jobs:
     - name: Fix Xcode project
       run: |
         cd ios
-        # Configuración segura que no falla si las claves no existen
-        /usr/libexec/PlistBuddy -c "Add :ALWAYS_SEARCH_USER_PATHS string NO" Runner.xcodeproj/project.pbxproj 2>/dev/null || true
-        /usr/libexec/PlistBuddy -c "Set :ALWAYS_SEARCH_USER_PATHS NO" Runner.xcodeproj/project.pbxproj 2>/dev/null || true
-        /usr/libexec/PlistBuddy -c "Add :CLANG_ENABLE_MODULES string YES" Runner.xcodeproj/project.pbxproj 2>/dev/null || true
-        /usr/libexec/PlistBuddy -c "Set :CLANG_ENABLE_MODULES YES" Runner.xcodeproj/project.pbxproj 2>/dev/null || true
         # Deshabilitar cualquier firma de código adicional en Xcode
         /usr/libexec/PlistBuddy -c "Add :CODE_SIGNING_REQUIRED string NO" Runner.xcodeproj/project.pbxproj 2>/dev/null || true
         /usr/libexec/PlistBuddy -c "Set :CODE_SIGNING_REQUIRED NO" Runner.xcodeproj/project.pbxproj 2>/dev/null || true
+        /usr/libexec/PlistBuddy -c "Add :CODE_SIGNING_ALLOWED string NO" Runner.xcodeproj/project.pbxproj 2>/dev/null || true
+        /usr/libexec/PlistBuddy -c "Set :CODE_SIGNING_ALLOWED NO" Runner.xcodeproj/project.pbxproj 2>/dev/null || true
         
     # Paso 6: Construir IPA (con detalles adicionales de Xcode)
     - name: Build IPA
