@@ -30,6 +30,7 @@ jobs:
     - name: Clean Flutter and Dart cache
       run: |
         flutter clean
+        flutter pub cache repair
 
     # Paso 5: Instalar dependencias de Flutter
     - name: Install dependencies
