@@ -1,11 +1,7 @@
 platform :ios, '14.0'
 
-ENV['FLUTTER_ROOT'] = File.expand_path('~/flutter')
-require File.expand_path(File.join(ENV['FLUTTER_ROOT'], 'packages', 'flutter_tools', 'bin', 'podhelper'))
-
-target 'Runner' do
-  use_frameworks!
-  use_modular_headers!
-
-  flutter_install_all_ios_pods(File.dirname(File.realpath(__FILE__)))
+flutter_root = ENV['FLUTTER_ROOT']
+unless flutter_root
+  raise "FLUTTER_ROOT is not set. Make sure it's available as an environment variable."
 end
+require File.join(flutter_root, 'packages', 'flutter_tools', 'bin', 'podhelper')
