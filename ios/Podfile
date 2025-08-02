@@ -4,4 +4,7 @@ flutter_root = ENV['FLUTTER_ROOT']
 unless flutter_root
   raise "FLUTTER_ROOT is not set. Make sure it's available as an environment variable."
 end
+
 require File.join(flutter_root, 'packages', 'flutter_tools', 'bin', 'podhelper')
+
+flutter_ios_podfile_setup
