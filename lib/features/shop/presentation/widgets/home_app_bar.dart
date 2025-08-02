@@ -10,6 +10,7 @@ import 'package:wink/core/utils/constants/text_strings.dart';
 import 'package:wink/core/utils/helpers/helper_functions.dart';
 import 'package:wink/features/auth/presentation/views/login/login_view.dart';
 import 'package:wink/features/shop/presentation/views/cart_view.dart';
+import 'package:wink/features/auth/presentation/views/login/login_view2.dart';
 
 final _auth = FirebaseAuth.instance;
 
@@ -45,7 +46,7 @@ class HomeAppBar extends StatelessWidget {
               color: TColors.white,
               onPressed: () {
                 _auth.signOut();
-                THelperFunctions.navigateToScreen(context, const LoginView());
+                THelperFunctions.navigateToScreen(context, const LoginView2());
               },
             ),
           ),

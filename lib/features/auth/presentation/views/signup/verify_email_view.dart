@@ -7,6 +7,7 @@ import 'package:wink/core/utils/device/device_utility.dart';
 import 'package:wink/core/utils/helpers/helper_functions.dart';
 import 'package:wink/features/auth/presentation/views/login/login_view.dart';
 import 'package:wink/features/auth/presentation/widgets/email_verified_successfully.dart';
+import 'package:wink/features/auth/presentation/views/login/login_view2.dart';
 
 class VerifyEmailView extends StatelessWidget {
   const VerifyEmailView({super.key});
@@ -20,7 +21,7 @@ class VerifyEmailView extends StatelessWidget {
           IconButton(
             onPressed: () {
               THelperFunctions.navigateReplacementToScreen(
-                  context, const LoginView());
+                  context, const LoginView2());
             },
             icon: const Icon(CupertinoIcons.clear),
           )

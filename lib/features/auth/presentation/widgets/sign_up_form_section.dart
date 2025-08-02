@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:quickalert/models/quickalert_type.dart';
-import 'package:quickalert/widgets/quickalert_dialog.dart';
+
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wink/core/enums/status.dart';
 import 'package:wink/core/utils/constants/sizes.dart';
@@ -21,6 +21,8 @@ import 'package:wink/features/auth/presentation/views/signup/auth.dart';
 import 'package:wink/features/shop/presentation/views/home_view.dart';
 import 'package:wink/features/shop/presentation/views/new_home_view.dart';
 import 'terms_and_privacy_agreement.dart';
+import 'package:wink/features/shop/presentation/views/main_navigation_view.dart';
+
 
 class SignUpFormSection extends StatefulWidget {
   const SignUpFormSection({super.key});
@@ -60,32 +62,6 @@ class _SignUpFormSectionState extends State<SignUpFormSection> {
   String? selectedCompany;
   List<String> companyList = [];
 
-  void showAlert(QuickAlertType quickAlertType, String e) {
-    QuickAlert.show(
-        context: context,
-        type: quickAlertType,
-        title: "Error al Iniciar Sesión",
-        text: e,
-        barrierDismissible: false);
-  }
-
-  void showAlertRegister(QuickAlertType quickAlertType, String e) {
-    QuickAlert.show(
-        context: context,
-        type: quickAlertType,
-        title: "Error al Registrarse",
-        text: e,
-        barrierDismissible: false);
-  }
-
-  void showRegisterSuccesful(QuickAlertType quickAlertType, String e) {
-    QuickAlert.show(
-        context: context,
-        type: quickAlertType,
-        title: "Cuenta creada corectamente",
-        text: e,
-        barrierDismissible: false);
-  }
 
   void _handleRegistration() {
     _signUp();
@@ -216,7 +192,7 @@ class _SignUpFormSectionState extends State<SignUpFormSection> {
       borderSide: const BorderSide(color: Colors.black, width: 1),
       borderRadius: BorderRadius.circular(12),
     ),
-                prefixIcon: Icon(Icons.key),
+                prefixIcon: Icon(Icons.password),
                 suffixIcon: IconButton(
                   icon: Icon(
                     _obscurePassword ? Iconsax.eye_slash : Iconsax.eye,
@@ -242,7 +218,7 @@ class _SignUpFormSectionState extends State<SignUpFormSection> {
       borderSide: const BorderSide(color: Colors.black, width: 1),
       borderRadius: BorderRadius.circular(12),
     ),
-                prefixIcon: Icon(Icons.key),
+                prefixIcon: Icon(Icons.password),
                 labelText: 'Confirmar Contraseña',
               ),
             ),
@@ -257,7 +233,7 @@ class _SignUpFormSectionState extends State<SignUpFormSection> {
                     style: OutlinedButton.styleFrom(
                       backgroundColor: Color.fromARGB(100, 158, 143, 47),
       side: const BorderSide(color: Color.fromARGB(100, 158, 143, 47), width: 2), // 👈 Borde blanco
-      foregroundColor: const Color.fromARGB(100, 158, 143, 47), // 👈 Color del texto e íconos
+       // 👈 Color del texto e íconos
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
       ),
@@ -309,13 +285,15 @@ class _SignUpFormSectionState extends State<SignUpFormSection> {
               message: "Usuario registrado correctamente",
               type: SnackBarType.success);
 
-          THelperFunctions.navigateReplacementToScreen(context, HomeView());
+          THelperFunctions.navigateReplacementToScreen(context, MainNavigationView());
 
         } 
         
       } on FirebaseAuthException catch (e) {
-        showAlertRegister(QuickAlertType.error,
-            "Error: $e");
+        THelperFunctions.showSnackBar(
+              context: context,
+              message: "No se pudo registrar al usuario: "+e.toString(),
+              type: SnackBarType.success);
 
         
       }

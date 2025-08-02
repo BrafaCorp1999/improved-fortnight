@@ -4,6 +4,7 @@ import 'package:wink/core/utils/constants/image_strings.dart';
 import 'package:wink/core/utils/constants/text_strings.dart';
 import 'package:wink/core/utils/helpers/helper_functions.dart';
 import 'package:wink/core/common/widgets/success_view.dart';
+import 'package:wink/features/auth/presentation/views/login/login_view2.dart';
 import 'package:wink/features/auth/presentation/views/login/login_view.dart';
 
 class EmailVerifiedSuccessfully extends StatelessWidget {
@@ -21,7 +22,7 @@ class EmailVerifiedSuccessfully extends StatelessWidget {
         buttonText: TTexts.tContinue,
         onPressed: () {
           THelperFunctions.navigateReplacementToScreen(
-              context, const LoginView());
+              context, const LoginView2());
         },
       ),
     );

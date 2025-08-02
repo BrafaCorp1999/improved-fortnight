@@ -5,6 +5,7 @@ import 'package:wink/core/common/view_models/cart_counter_icon_view_model.dart';
 import 'package:wink/core/utils/constants/colors.dart';
 import 'package:wink/core/utils/helpers/helper_functions.dart';
 import 'package:wink/features/auth/presentation/views/login/login_view.dart';
+import 'package:wink/features/auth/presentation/views/login/login_view2.dart';
 
 final _auth = FirebaseAuth.instance;
 
@@ -55,7 +56,7 @@ class logoutIcon extends StatelessWidget {
 
    Future<void> signOut(context) async {
     await _auth.signOut();
-    THelperFunctions.navigateToScreen(context, const LoginView());
+    THelperFunctions.navigateToScreen(context, const LoginView2());
 
   }
 }

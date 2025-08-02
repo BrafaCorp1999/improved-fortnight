@@ -26,7 +26,7 @@ class BrandCard extends StatelessWidget {
             children: [
               // Fixed size container for the image
               SizedBox(
-                width: 40,
+                width: 120,
                 height: 40,
                 child: Image.asset(
                   brandCardModel.image,
@@ -49,33 +49,33 @@ class BrandCard extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Flexible(
-                          child: Text(
-                            brandCardModel.brandName,
-                            style: Theme.of(context)
-                                .textTheme
-                                .titleLarge
-                                ?.copyWith(overflow: TextOverflow.ellipsis),
-                          ),
-                        ),
-                        if (brandCardModel.isVerified) ...[
-                          const SizedBox(width: TSizes.xs),
-                          const Icon(
-                            Iconsax.verify5,
-                            size: TSizes.iconXs,
-                            color: TColors.primary,
-                          ),
-                        ],
-                      ],
-                    ),
-                    Text(
-                      "${brandCardModel.productCount} Products",
-                      style: Theme.of(context).textTheme.labelMedium,
-                      overflow: TextOverflow.ellipsis,
-                    ),
+                    // Row(
+                    //   mainAxisSize: MainAxisSize.min,
+                    //   children: [
+                    //     Flexible(
+                    //       child: Text(
+                    //         brandCardModel.brandName,
+                    //         style: Theme.of(context)
+                    //             .textTheme
+                    //             .titleLarge
+                    //             ?.copyWith(overflow: TextOverflow.ellipsis),
+                    //       ),
+                    //     ),
+                    //     if (brandCardModel.isVerified) ...[
+                    //       const SizedBox(width: TSizes.xs),
+                    //       const Icon(
+                    //         Iconsax.verify5,
+                    //         size: TSizes.iconXs,
+                    //         color: TColors.primary,
+                    //       ),
+                    //     ],
+                    //   ],
+                    // ),
+                    // Text(
+                    //   "${brandCardModel.productCount} Products",
+                    //   style: Theme.of(context).textTheme.labelMedium,
+                    //   overflow: TextOverflow.ellipsis,
+                    // ),
                   ],
                 ),
               ),

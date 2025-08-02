@@ -50,7 +50,7 @@ class CheckoutView extends StatelessWidget {
               hasArrowBack: true,
               title: Text(
                 "Order Review",
-                style: Theme.of(context).textTheme.headlineSmall,
+                
               ))),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -73,7 +73,7 @@ class CheckoutView extends StatelessWidget {
                         showBorder: true,
                         padding: const EdgeInsets.all(TSizes.md),
                         color: dark ? TColors.black : TColors.white,
-                        child: const Column(
+                        child:  Column(
                           children: [
                             BillingAmountSection(),
                             SizedBox(

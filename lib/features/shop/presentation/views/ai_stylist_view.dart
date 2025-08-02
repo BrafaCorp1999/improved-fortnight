@@ -2,8 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:wink/core/utils/constants/colors.dart';
 import 'package:wink/core/utils/constants/text_strings.dart';
 import 'package:wink/features/shop/presentation/views/ai_result_view.dart';
+import 'package:wink/services/deepai_service.dart';
 import 'package:wink/services/gemini_service.dart';
+import 'package:wink/services/huggingface_service.dart';
+import 'package:wink/services/image_generator_service.dart';
+import 'package:wink/services/openai_service.dart';
+import 'package:wink/services/replicate_service.dart';
 import 'package:wink/services/unsplash_service.dart';
+import 'package:wink/features/shop/presentation/widgets/custom_pill_appbar.dart';
 
 class AIStylistView extends StatefulWidget {
   const AIStylistView({super.key});
@@ -38,75 +44,77 @@ final Color crema2 = Color.fromARGB(0, 233, 218, 182);
     'amarillo', 'beige', 'gris', 'rosado', 'marrón'
   ];
 
-  void submit() async {
-    if (occasion == null || style == null || climate == null) return;
+  
+void submit() async {
+  if (occasion == null || style == null || climate == null) return;
 
-    final colorPreference = selectedColors.isNotEmpty 
-      ? selectedColors.join(', ') 
+  final colorPreference = selectedColors.isNotEmpty
+      ? selectedColors.join(', ')
       : "cualquiera";
 
-    final prompt = "Sugiere un outfit para una ocasión '$occasion', con estilo '${style == "Otro" ? otherStyle : style}', en clima '$climate'. Preferencia de colores: $colorPreference. Máximo de 3-4 líneas resumido";
+  final prompt = "Sugiere un outfit para una ocasión '$occasion', con estilo '${style == "Otro" ? otherStyle : style}', en clima '$climate'. Preferencia de colores: $colorPreference. Máximo de 2 líneas resumido.";
 
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (_) => const Center(child: CircularProgressIndicator()),
-    );
+  showDialog(
+    context: context,
+    barrierDismissible: false,
+    builder: (_) => const Center(child: CircularProgressIndicator()),
+  );
 
-    try {
-      final outfitText = await GeminiService.getOutfitRecommendation(prompt);
-      final images = await UnsplashService.searchImages(
-        style: style!,
-        occasion: occasion!,
-        climate: climate!,
-        colorPreference: colorPreference,
-      );
+  try {
+    print("[🧠] Enviando prompt a OpenAI para texto...");
+    final outfitText = await OpenAIService.getOutfitRecommendation(prompt);
+    print("[✅] Texto generado: $outfitText");
 
-      if (mounted) {
-        Navigator.pop(context);
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (_) => AIResultView(
-              recommendation: outfitText,
-              imageUrls: images,
-            ),
-          ),
-        );
-      }
-    } catch (e) {
+    print("[🎨] Iniciando generación de imagen con múltiples servicios...");
+    final imageUrl = await ImageGeneratorService.generateImage(prompt);
+
+    final images = imageUrl != null ? [imageUrl] : [];
+
+    if (mounted) {
       Navigator.pop(context);
-      showDialog(
-        context: context,
-        builder: (_) => AlertDialog(
-          title: const Text("Error"),
-          content: Text("Ocurrió un error: $e"),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text("Cerrar"),
-            ),
-          ],
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => AIResultView(
+            recommendation: outfitText,
+            images: images,
+          ),
         ),
       );
     }
+
+  } catch (e) {
+    Navigator.pop(context);
+    print("[❌] Error general en generación IA: $e");
+    showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: const Text("Error"),
+        content: Text("Ocurrió un error generando el outfit: $e"),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text("Cerrar"),
+          ),
+        ],
+      ),
+    );
   }
+}
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 253, 252, 246),
-      appBar: AppBar(
-        title: const Text("AI Stylist"),
-        backgroundColor: Color.fromARGB(100, 158, 143, 47),
-       
-      ),
+      
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(24),
+        padding: const EdgeInsets.all(12),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Ocasión
+            const CustomPillAppBar(title: "Wink IA"),
+
             _buildQuestionSection(
               title: "¿Para qué ocasión es el outfit?",
               options: ["Casual", "Fiesta", "Trabajo", "Cena", "Otro"],
@@ -183,8 +191,8 @@ final Color crema2 = Color.fromARGB(0, 233, 218, 182);
                 onPressed: submit,
                 style: ElevatedButton.styleFrom(
                   
-                  backgroundColor: Color.fromARGB(100, 158, 143, 47),
-                  foregroundColor: Color.fromARGB(100, 158, 143, 47),
+                  backgroundColor: const Color(0xFFF8836F),
+                  foregroundColor: Colors.white,
                   elevation: 0,
                   minimumSize: const Size(double.infinity, 50),
                   shape: RoundedRectangleBorder(
@@ -219,7 +227,7 @@ final Color crema2 = Color.fromARGB(0, 233, 218, 182);
               label: Text(option),
               selected: selectedValue == option,
               onSelected: (selected) => onChanged(selected ? option : null),
-              selectedColor: Color.fromARGB(100, 158, 143, 47),
+              selectedColor: lightFrenchBeige,
               backgroundColor: Color.fromARGB(255, 253, 252, 246),
               labelStyle: TextStyle(
                 color: selectedValue == option ? Colors.black : Colors.black87,
@@ -236,8 +244,8 @@ final Color crema2 = Color.fromARGB(0, 233, 218, 182);
 
   Widget _buildColorSelection() {
     return Wrap(
-      spacing: 8,
-      runSpacing: 8,
+      spacing: 12,
+      runSpacing: 12,
       children: colorOptions.map((color) {
         final isSelected = selectedColors.contains(color);
         return GestureDetector(
@@ -251,8 +259,8 @@ final Color crema2 = Color.fromARGB(0, 233, 218, 182);
             });
           },
           child: Container(
-            width: 40,
-            height: 40,
+            width: 70,
+            height: 70,
             decoration: BoxDecoration(
               color: _getColorFromName(color),
               shape: BoxShape.circle,

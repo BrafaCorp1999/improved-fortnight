@@ -8,12 +8,15 @@ import 'package:wink/core/utils/theme/theme.dart';
 import 'package:wink/features/auth/presentation/logic/on_boarding/on_boarding_cubit.dart';
 import 'package:wink/features/auth/presentation/logic/splash_screen.dart';
 import 'package:wink/features/auth/presentation/views/login/login_view.dart';
+import 'package:wink/features/auth/presentation/views/login/login_view2.dart';
 import 'package:wink/features/auth/presentation/views/on_boarding/on_boarding_view.dart';
 import 'package:wink/features/shop/presentation/controller/shop_cubit.dart';
 import 'package:wink/features/shop/presentation/views/home_view.dart';
+import 'package:wink/features/shop/presentation/views/new_home_view.dart';
+import 'package:wink/features/shop/presentation/views/main_navigation_view.dart';
 
 class TStore extends StatelessWidget {
-  const TStore({super.key});
+  const TStore();
 
   @override
   Widget build(BuildContext context) {
@@ -40,8 +43,10 @@ class TStore extends StatelessWidget {
         routes: {
           '/': (context) => const SplashView(),
           '/onboarding': (context) => const OnBoardingView(),
-          '/login': (context) => const LoginView(),
-          '/home': (context) => const HomeView(),
+          '/login': (context) => const LoginView2(),
+          '/home': (context) => MainNavigationView(),
+          
+          
         },
       ),
     );

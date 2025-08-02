@@ -5,6 +5,7 @@ import 'package:wink/core/common/widgets/app_bar.dart';
 import 'package:wink/core/common/widgets/brand_card.dart';
 import 'package:wink/core/utils/constants/image_strings.dart';
 import 'package:wink/core/utils/constants/sizes.dart';
+import 'package:wink/features/shop/presentation/views/products_gallery_view.dart';
 import 'package:wink/features/shop/presentation/widgets/sortable_products.dart';
 
 class BrandProductsView extends StatelessWidget {
@@ -33,8 +34,15 @@ class BrandProductsView extends StatelessWidget {
               const SizedBox(
                 height: 6,
               ),
-              const SortableProducts(),
-            ],
+              ProductGalleryView(
+      brandLogoAsset: "assets/icons/brands/zara.png",
+      productImages: [
+        "assets/images/products/product1.png",
+        "assets/images/products/product2.png",
+        // etc.
+              //const SortableProducts(),
+              ],)
+              ],
           ),
         )),
       ),

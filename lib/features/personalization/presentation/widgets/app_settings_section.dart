@@ -6,6 +6,7 @@ import 'package:wink/core/utils/helpers/helper_functions.dart';
 import 'package:wink/features/auth/presentation/views/login/login_view.dart';
 import 'package:wink/features/personalization/presentation/view_models/settings_menu_tile_model.dart';
 import 'package:wink/features/personalization/presentation/widgets/settings_menu_tile_list.dart';
+import 'package:wink/features/auth/presentation/views/login/login_view2.dart';
 
 class AppSettingsSection extends StatelessWidget {
   const AppSettingsSection({
@@ -32,7 +33,7 @@ class AppSettingsSection extends StatelessWidget {
           child: OutlinedButton(
             onPressed: () {
               THelperFunctions.navigateReplacementToScreen(
-                  context, const LoginView());
+                  context, const LoginView2());
             },
             child: const Text("Logout"),
           ),

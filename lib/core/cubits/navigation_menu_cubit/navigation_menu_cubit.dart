@@ -8,6 +8,7 @@ import 'package:wink/features/shop/presentation/views/home_view.dart';
 import 'package:wink/features/shop/presentation/views/new_home_view.dart';
 import 'package:wink/features/shop/presentation/views/store_view.dart';
 import 'package:wink/features/shop/presentation/views/wishlist_view.dart';
+import 'package:wink/features/shop/presentation/views/main_navigation_view.dart';
 
 part 'navigation_menu_state.dart';
 
@@ -17,8 +18,7 @@ class NavigationMenuCubit extends Cubit<NavigationMenuState> {
 
   final screensList = [
     
-    //const NewHomeView()
-    const HomeView(),
+    const NewHomeView(),
     const StoreView(),
     const WishlistView(),
     const SettingsView(),

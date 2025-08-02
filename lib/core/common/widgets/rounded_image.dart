@@ -1,4 +1,4 @@
-import 'package:cached_network_image/cached_network_image.dart';
+//import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:wink/core/common/view_models/rounded_image_view_model.dart';
@@ -29,45 +29,46 @@ class RoundedImage extends StatelessWidget {
           borderRadius: roundedImageModel.applyImageRadius
               ? BorderRadius.circular(roundedImageModel.borderRadius)
               : BorderRadius.zero,
-          child: roundedImageModel.isNetworkImage
-              ? CachedNetworkImage(
-                  imageUrl: roundedImageModel.image,
-                  placeholderFadeInDuration: Duration.zero,
-                  placeholder: (context, url) => Shimmer.fromColors(
-                    baseColor: dark ? Colors.grey[850]! : Colors.grey[300]!,
-                    highlightColor:
-                        dark ? Colors.grey[700]! : Colors.grey[100]!,
-                    child: Container(
-                      width: roundedImageModel.width,
-                      height: roundedImageModel.height,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: roundedImageModel.applyImageRadius
-                            ? BorderRadius.circular(
-                                roundedImageModel.borderRadius)
-                            : null,
-                      ),
-                    ),
-                  ),
-                  errorWidget: (context, url, error) => Container(
-                    width: roundedImageModel.width,
-                    height: roundedImageModel.height,
-                    decoration: BoxDecoration(
-                      color: dark ? TColors.darkerGrey : TColors.light,
-                      borderRadius: roundedImageModel.applyImageRadius
-                          ? BorderRadius.circular(
-                              roundedImageModel.borderRadius)
-                          : null,
-                    ),
-                    child: Icon(
-                      Icons.warning,
-                      color: dark ? TColors.light : TColors.dark,
-                    ),
-                  ),
-                  color: roundedImageModel.overlayColor,
-                  fit: roundedImageModel.fit,
-                )
-              : Image(
+          // child: roundedImageModel.isNetworkImage
+          //     ? CachedNetworkImage(
+          //         imageUrl: roundedImageModel.image,
+          //         placeholderFadeInDuration: Duration.zero,
+          //         placeholder: (context, url) => Shimmer.fromColors(
+          //           baseColor: dark ? Colors.grey[850]! : Colors.grey[300]!,
+          //           highlightColor:
+          //               dark ? Colors.grey[700]! : Colors.grey[100]!,
+          //           child: Container(
+          //             width: roundedImageModel.width,
+          //             height: roundedImageModel.height,
+          //             decoration: BoxDecoration(
+          //               color: Colors.white,
+          //               borderRadius: roundedImageModel.applyImageRadius
+          //                   ? BorderRadius.circular(
+          //                       roundedImageModel.borderRadius)
+          //                   : null,
+          //             ),
+          //           ),
+          //         ),
+          //         errorWidget: (context, url, error) => Container(
+          //           width: roundedImageModel.width,
+          //           height: roundedImageModel.height,
+          //           decoration: BoxDecoration(
+          //             color: dark ? TColors.darkerGrey : TColors.light,
+          //             borderRadius: roundedImageModel.applyImageRadius
+          //                 ? BorderRadius.circular(
+          //                     roundedImageModel.borderRadius)
+          //                 : null,
+          //           ),
+          //           child: Icon(
+          //             Icons.warning,
+          //             color: dark ? TColors.light : TColors.dark,
+          //           ),
+          //         ),
+          //         color: roundedImageModel.overlayColor,
+          //         fit: roundedImageModel.fit,
+          //       )
+          //:     
+          child: Image(
                   image: AssetImage(
                     roundedImageModel.image,
                   ),

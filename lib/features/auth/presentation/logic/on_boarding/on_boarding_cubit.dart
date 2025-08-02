@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wink/core/utils/helpers/helper_functions.dart';
 import 'package:wink/features/auth/presentation/views/login/login_view.dart';
+import 'package:wink/features/auth/presentation/views/login/login_view2.dart';
 
 part 'on_boarding_state.dart';
 
@@ -14,7 +15,7 @@ class OnBoardingCubit extends Cubit<OnBoardingState> {
   Future<void> _finishOnboarding(BuildContext context) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool('onboarding_seen', true);
-      THelperFunctions.navigateReplacementToScreen(context, const LoginView());
+      THelperFunctions.navigateReplacementToScreen(context, const LoginView2());
   }
 
   OnBoardingCubit() : super(OnBoardingInitial());

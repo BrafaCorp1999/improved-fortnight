@@ -50,11 +50,11 @@ class DefaultFirebaseOptions {
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyDO-10Pp4ur-vuwE9Hem3cJYiImcOkMZAA',
-    appId: '1:772445374177:android:6c033163fda6a90ef3d9a0',
-    messagingSenderId: '772445374177',
-    projectId: 'wink-e636d',
-    storageBucket: 'ecommerce-t-2003.appspot.com',
+    apiKey: 'AIzaSyClEYvPblfo7r_paGgsUdSYU8SPTm1xqoQ',
+    appId: '1:934236600317:android:31da1d5498b3d6d0484b94',
+    messagingSenderId: '934236600317',
+    projectId: 'wink-e51d9',
+    storageBucket: 'wink-e51d9.firebasestorage.app',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
@@ -62,7 +62,7 @@ class DefaultFirebaseOptions {
     appId: '1:772445374177:ios:1ecc56d1d7692ed7f3d9a0',
     messagingSenderId: '772445374177',
     projectId: 'wink-e636d',
-    storageBucket: 'ecommerce-t-2003.appspot.com',
+    storageBucket: 'wink-e51d9.firebasestorage.app',
     iosBundleId: 'com.brafacorp.wink',
   );
 

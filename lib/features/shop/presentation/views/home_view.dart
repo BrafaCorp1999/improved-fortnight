@@ -2,21 +2,14 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shimmer/shimmer.dart';
-import 'package:wink/core/common/view_models/grid_layout_view_model.dart';
-import 'package:wink/core/common/view_models/section_heading_view_model.dart';
-import 'package:wink/core/common/widgets/navigation_menu.dart';
-import 'package:wink/core/common/widgets/section_heading.dart';
-import 'package:wink/core/common/widgets/vertical_product_card.dart';
 import 'package:wink/core/cubits/banner_carousel_slider_cubit_cubit/banner_carousel_slider_cubit.dart';
 import 'package:wink/core/utils/constants/colors.dart';
 import 'package:wink/core/utils/constants/sizes.dart';
 import 'package:wink/core/utils/helpers/helper_functions.dart';
-import 'package:wink/core/utils/service_locator/service_locator.dart';
-import 'package:wink/features/auth/presentation/widgets/grid_layout.dart';
-import 'package:wink/features/shop/presentation/controller/shop_cubit.dart';
 import 'package:wink/features/shop/presentation/views/ai_stylist_view.dart';
 import 'package:wink/features/shop/presentation/views/all_brands_view.dart';
 import 'package:wink/features/shop/presentation/views/all_products_view.dart';
+import 'package:wink/features/shop/presentation/views/my_ward_dropview.dart';
 import 'package:wink/features/shop/presentation/views/quick_access_button.dart';
 import 'package:wink/features/shop/presentation/widgets/home_header_section.dart';
 import 'package:wink/features/shop/presentation/widgets/promo_banner_carousel_slider.dart';
@@ -224,11 +217,7 @@ class HomeView extends StatelessWidget {
                   crossAxisSpacing: 20,
                   mainAxisSpacing: 20,
                   children: [
-                    // QuickAccessButton(
-                    //   icon: Icons.question_mark,
-                    //   label: "¿Qué me pongo?",
-                    //   onPressed: (){nextPage();},
-                    // ),
+                    
                     QuickAccessButton(
                       icon: Icons.auto_awesome,
                       label: "¿Qué me pongo?(IA)",
@@ -263,11 +252,15 @@ class HomeView extends StatelessWidget {
 
                     ),
                      QuickAccessButton(
-                      icon: Icons.checkroom,
-                      label: "Mi Armario",
-                      onPressed: (){nextPage();},
-                      
-                    ),
+  icon: Icons.checkroom,
+  label: "Mi Armario",
+  onPressed: () {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) =>  MyClosetView()),
+    );
+  },
+),
                     QuickAccessButton(
                       icon: Icons.add_photo_alternate,
                       label: "Publicar outfit",
@@ -278,55 +271,7 @@ class HomeView extends StatelessWidget {
                 ),
               ),
              
-              // Padding(
-              //   padding: const EdgeInsets.all(16.0),
-              //   child: SectionHeading(
-              //     sectionHeadingModel: SectionHeadingModel(
-              //       title: "Top Rated Products",
-              //       showActionButton: true,
-              //       textColor: TColors.primary,
-              //       actionButtonOnPressed: () {
-              //         THelperFunctions.navigateToScreen(
-              //           context,
-              //           BlocProvider(
-              //             create: (context) => getIt<ShopCubit>()
-              //               ..getSortedProducts(
-              //                   sortBy: 'rating', sortType: "desc"),
-              //             child: const AllProductsView(),
-              //           ),
-              //         );
-              //       },
-              //       actionButtonTitle: "View All",
-              //     ),
-              //   ),
-              // ),
-
-
-              // const SizedBox(height: TSizes.spaceBtwItems),
-              // BlocBuilder<ShopCubit, ShopState>(
-              //   builder: (context, state) {
-              //     if (state is ShopError) {
-              //       return Text(state.error.message);
-              //     }
-              //     if (state is ShopSortedProductsLoaded) {
-              //       return Padding(
-              //         padding: const EdgeInsets.all(16.0),
-              //         child: GridLayout(
-              //           gridLayoutModel: GridLayoutModel(
-              //             itemCount: state.productsList.length,
-              //             itemBuilder: (context, index) {
-              //               return VerticalProductCard(
-              //                 product: state.productsList[index],
-              //               );
-              //             },
-              //             mainAxisExtent: 288,
-              //           ),
-              //         ),
-              //       );
-              //     }
-              //     return const SizedBox();
-              //   },
-              // ),
+          
             ],
           ),
         ),

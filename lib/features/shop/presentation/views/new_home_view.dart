@@ -1,23 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:wink/core/common/view_models/grid_layout_view_model.dart';
-import 'package:wink/core/common/view_models/section_heading_view_model.dart';
-import 'package:wink/core/common/widgets/section_heading.dart' show SectionHeading;
-import 'package:wink/core/common/widgets/vertical_product_card.dart';
-import 'package:wink/core/cubits/banner_carousel_slider_cubit_cubit/banner_carousel_slider_cubit.dart';
-import 'package:wink/core/utils/constants/colors.dart';
-import 'package:wink/core/utils/helpers/helper_functions.dart';
-import 'package:wink/core/utils/service_locator/service_locator.dart';
-import 'package:wink/features/auth/presentation/widgets/grid_layout.dart';
-import 'package:wink/features/shop/presentation/controller/shop_cubit.dart';
-import 'package:wink/features/shop/presentation/views/all_products_view.dart';
-import 'package:wink/features/shop/presentation/widgets/home_header_section.dart';
-import 'package:wink/features/shop/presentation/widgets/promo_banner_carousel_slider.dart';
-
-// Aquí importa tus paquetes reales del proyecto para banners, productos, etc.
-
-const Color babyPinkUltraLight = Color(0xFFFFF0F1); // Más clarito aún
-const Color softGold = Color(0xFFFFD700);
+import 'package:wink/features/shop/presentation/views/ai_stylist_view.dart';
+import 'package:wink/features/shop/presentation/views/all_brands_view.dart';
+import 'package:wink/features/shop/presentation/views/ai_stylist_view.dart';
+import 'package:wink/features/shop/presentation/views/my_ward_dropview.dart';
+import 'package:wink/features/shop/presentation/widgets/quick_access_icon_button.dart';
 
 class NewHomeView extends StatelessWidget {
   const NewHomeView({super.key});
@@ -25,201 +11,218 @@ class NewHomeView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: babyPinkUltraLight,
+      backgroundColor: const Color(0xFFF8F8F8),
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(vertical: 16),
+          padding: const EdgeInsets.symmetric(vertical: 24),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // --- Header y banners originales ---
-              const HomeHeaderSection(),
-              const SizedBox(height: 16),
-              BlocProvider(
-                create: (context) => BannerCarouselSliderCubit(),
-                child: const PromoBannerCarouselSlider(),
+              // Header con saludo y avatar
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 20),
+                child: Row(
+                  children: [
+                    CircleAvatar(
+                      radius: 24,
+                      backgroundImage: AssetImage("assets/images/reviews/review_profile_image_2.jpeg"),
+                    ),
+                    SizedBox(width: 12),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text("Welcome back,", style: TextStyle(fontSize: 14, color: Colors.black54)),
+                        Text("Bryan!", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                      ],
+                    )
+                  ],
+                ),
               ),
-              const SizedBox(height: 24),
 
-              // --- Sección accesos rápidos ---
+              const SizedBox(height: 20),
+
+              // Buscador
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: const TextField(
+                    decoration: InputDecoration(
+                      border: InputBorder.none,
+                      hintText: "Search...",
+                      icon: Icon(Icons.search, color: Colors.black26),
+                    ),
+                  ),
+                ),
+              ),
+
+              const SizedBox(height: 20),
+
+              // Banners
+              SizedBox(
+                height: 180,
+                child: ListView(
+                  scrollDirection: Axis.horizontal,
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  children: [
+                    _buildBanner('assets/images/banners/banner1.png', "Sneakers\nof the week"),
+                    const SizedBox(width: 12),
+                    _buildBanner('assets/images/banners/banner2.png', "Dress\nof the week"),
+                  ],
+                ),
+              ),
+
+              const SizedBox(height: 30),
+
+              // Accesos Rápidos
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 20),
                 child: Text(
                   "Accesos rápidos",
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.black87,
-                  ),
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
               ),
               const SizedBox(height: 16),
 
-              // Grid con accesos rápidos (sin scroll interno para evitar overflow)
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: GridView.count(
-                  physics: const NeverScrollableScrollPhysics(),
-                  shrinkWrap: true,
-                  crossAxisCount: 3,
-                  crossAxisSpacing: 20,
-                  mainAxisSpacing: 20,
+              SizedBox(
+                height: 155,
+                
+                child: ListView(
+                  scrollDirection: Axis.horizontal,
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
                   children: [
-                    QuickAccessButton(
-                      icon: Icons.question_mark,
-                      label: "¿Qué me pongo?",
-                      onPressed: (){nextPage();},
+                    QuickAccessIconButton(
+                      iconPath: "assets/icons/quick_access/star.png",
+                      label: "Wink (IA)",
+                      onPressed: () {
+                        Navigator.push(context, MaterialPageRoute(builder: (_) => const AIStylistView()));
+                      },
                     ),
-                    QuickAccessButton(
-                      icon: Icons.auto_awesome,
-                      label: "AI Stylist",
-                      onPressed: (){nextPage();},
-                    ),
-                    QuickAccessButton(
-                      icon: Icons.favorite_border,
+                    QuickAccessIconButton(
+                      iconPath: "assets/icons/quick_access/heart.png",
                       label: "Favoritos",
-                      onPressed: (){nextPage();},
+                      onPressed: () {},
                     ),
-                    QuickAccessButton(
-                      icon: Icons.store,
+                    QuickAccessIconButton(
+                      iconPath: "assets/icons/quick_access/shop.png",
                       label: "Tiendas",
-                      onPressed: (){nextPage();},
+                      onPressed: () {
+                        Navigator.push(context, MaterialPageRoute(builder: (_) => const AllBrandsView()));
+                      },
                     ),
-                    QuickAccessButton(
-                      icon: Icons.search,
-                      label: "Buscar prenda",
-                      onPressed: (){nextPage();},
+                    QuickAccessIconButton(
+                      iconPath: "assets/icons/quick_access/search.png",
+                      label: "Buscar",
+                      onPressed: () {},
                     ),
-                    QuickAccessButton(
-                      icon: Icons.checkroom,
+                    QuickAccessIconButton(
+                      iconPath: "assets/icons/quick_access/wardrobe.png",
                       label: "Mi Armario",
-                      onPressed: (){nextPage();},
+                      onPressed: () {
+                        Navigator.push(context, MaterialPageRoute(builder: (_) =>  MyClosetView()));
+                      },
                     ),
-                    QuickAccessButton(
-                      icon: Icons.add_photo_alternate,
-                      label: "Publicar outfit",
-                      onPressed: (){nextPage();},
+                    QuickAccessIconButton(
+                      iconPath: "assets/icons/quick_access/upload.png",
+                      label: "Publicar",
+                      onPressed: () {},
                     ),
                   ],
                 ),
               ),
 
-              const SizedBox(height: 32),
+              const SizedBox(height: 30),
 
-              // --- Productos originales ---
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: SectionHeading(
-                  sectionHeadingModel: SectionHeadingModel(
-                    title: "Top Rated Products",
-                    showActionButton: true,
-                    textColor: TColors.primary,
-                    actionButtonOnPressed: () {
-                      THelperFunctions.navigateToScreen(
-                        context,
-                        BlocProvider(
-                          create: (context) => getIt<ShopCubit>()
-                            ..getSortedProducts(sortBy: 'rating', sortType: "desc"),
-                          child: const AllProductsView(),
-                        ),
-                      );
-                    },
-                    actionButtonTitle: "View All",
-                  ),
+              // Categorías
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 20),
+                child: Text(
+                  "Categorías",
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
               ),
               const SizedBox(height: 16),
-              BlocBuilder<ShopCubit, ShopState>(
-                builder: (context, state) {
-                  if (state is ShopError) {
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: Text(state.error.message),
-                    );
-                  }
-                  if (state is ShopSortedProductsLoaded) {
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: GridLayout(
-                        gridLayoutModel: GridLayoutModel(
-                          itemCount: state.productsList.length,
-                          itemBuilder: (context, index) {
-                            return VerticalProductCard(
-                            index: index,
-                              product: state.productsList[index],
-                            );
-                          },
-                          mainAxisExtent: 288,
-                        ),
-                      ),
-                    );
-                  }
-                  return const NewHomeView();
-                },
+
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Column(
+                  children: [
+                    _buildCategoryCard('assets/images/categories/cat1.png', "ACCESORIES"),
+                    const SizedBox(height: 16),
+                    _buildCategoryCard('assets/images/categories/cat2.png', "PANTS"),
+                    const SizedBox(height: 16),
+                    _buildCategoryCard('assets/images/categories/cat3.png', "SHOES"),
+                  ],
+                ),
               ),
-              const SizedBox(height: 32),
             ],
           ),
         ),
       ),
     );
   }
-  
-  void nextPage() {}
-}
 
-class QuickAccessButton extends StatelessWidget {
-  final IconData icon;
-  final String label;
-  final VoidCallback onPressed;
-
-  const QuickAccessButton({
-    super.key,
-    required this.icon,
-    required this.label,
-    required this.onPressed,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    // Ajusta tamaño y texto para evitar overflow
-    return InkWell(
-      onTap: onPressed,
-      borderRadius: BorderRadius.circular(20),
-      child: Column(
-        children: [
-          Container(
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(20),
-              border: Border.all(color: softGold, width: 2),
-              boxShadow: [
-                BoxShadow(
-                  color: softGold.withOpacity(0.3),
-                  blurRadius: 8,
-                  offset: const Offset(0, 3),
-                ),
-              ],
-            ),
-            padding: const EdgeInsets.all(18), // un poco menos padding
-            child: Icon(icon, size: 28, color: softGold), // ícono un poco más pequeño
+  Widget _buildBanner(String imagePath, String text) {
+    return Stack(
+      alignment: Alignment.centerLeft,
+      children: [
+        ClipRRect(
+          borderRadius: BorderRadius.circular(24),
+          child: Image.asset(
+            imagePath,
+            width: 300,
+            height: 150,
+            fit: BoxFit.cover,
           ),
-          const SizedBox(height: 6),
-          Text(
-            label,
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          child: Text(
+            text,
             style: const TextStyle(
-              fontSize: 12, // tamaño un poco menor
+              fontSize: 22,
               fontWeight: FontWeight.w600,
-              color: Colors.black87,
+              color: Colors.white,
+              height: 1.3,
             ),
-            textAlign: TextAlign.center,
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildCategoryCard(String imagePath, String title) {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(24),
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          Image.asset(
+            imagePath,
+            width: double.infinity,
+            height: 100,
+            fit: BoxFit.cover,
+          ),
+          Container(
+            width: double.infinity,
+            height: 100,
+            color: Colors.black.withOpacity(0.3),
+          ),
+          Text(
+            title,
+            style: const TextStyle(
+              fontSize: 22,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+              letterSpacing: 1.5,
+            ),
           ),
         ],
       ),
     );
-
   }
-
 }

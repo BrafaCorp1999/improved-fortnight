@@ -30,6 +30,7 @@ class GeminiService {
       return content;
     } else {
       throw Exception('Error API Gemini: ${response.body}');
+      
     }
   }
 }

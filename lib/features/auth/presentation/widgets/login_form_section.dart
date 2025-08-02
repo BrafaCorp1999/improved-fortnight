@@ -19,8 +19,6 @@ import 'package:wink/features/shop/presentation/controller/shop_cubit.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:quickalert/models/quickalert_type.dart';
-import 'package:quickalert/widgets/quickalert_dialog.dart';
 import 'package:wink/features/shop/presentation/views/home_view.dart';
 
 class LoginFormSection extends StatefulWidget {
@@ -90,14 +88,6 @@ class _LoginFormSectionState extends State<LoginFormSection> {
     }
   }
 
-  void showAlert(QuickAlertType quickAlertType, String e) {
-    QuickAlert.show(
-        context: context,
-        type: quickAlertType,
-        title: "Error al Iniciar Sesión",
-        text: e,
-        barrierDismissible: false);
-  }
 
   Future<void> login() async {
     final prefs = await SharedPreferences.getInstance();
@@ -131,10 +121,12 @@ class _LoginFormSectionState extends State<LoginFormSection> {
           ),
         );
             } on FirebaseAuthException catch (e) {
-        showAlert(QuickAlertType.error,
-            "El correo electrónico y/o la contraseña son incorrectos.\nPor favor, revisa tus credenciales y vuelve a intentarlo.");
 
-      }
+      //   showAlert(QuickAlertType.error,
+      //       "El correo electrónico y/o la contraseña son incorrectos.\nPor favor, revisa tus credenciales y vuelve a intentarlo.");
+
+
+       }
     
   }
 
@@ -183,7 +175,7 @@ class _LoginFormSectionState extends State<LoginFormSection> {
                   controller: _passwordController,
                   obscureText: _obscurePassword,
                   decoration: InputDecoration(
-                    prefixIcon: const Icon(Icons.key),
+                    prefixIcon: const Icon(Icons.password),
                     enabledBorder: OutlineInputBorder(
       borderSide: const BorderSide(color: Colors.black, width: 1),
       borderRadius: BorderRadius.circular(12),
@@ -247,7 +239,7 @@ class _LoginFormSectionState extends State<LoginFormSection> {
                     style: OutlinedButton.styleFrom(
                       backgroundColor: Color.fromARGB(100, 158, 143, 47),
       side: const BorderSide(color: Color.fromARGB(100, 158, 143, 47), width: 2), // 👈 Borde blanco
-      foregroundColor: const Color.fromARGB(100, 158, 143, 47), // 👈 Color del texto e íconos
+      // 👈 Color del texto e íconos
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
       ),
@@ -275,7 +267,7 @@ class _LoginFormSectionState extends State<LoginFormSection> {
   child: OutlinedButton(
     style: OutlinedButton.styleFrom(
       side: const BorderSide(color: Colors.black, width: 2), // 👈 Borde blanco
-      foregroundColor: Colors.black, // 👈 Color del texto e íconos
+       // 👈 Color del texto e íconos
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
       ),

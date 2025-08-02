@@ -3,28 +3,28 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:wink/core/utils/constants/sizes.dart';
 import 'package:wink/core/utils/constants/text_strings.dart';
 import 'package:wink/features/auth/presentation/logic/register/register_cubit.dart';
-import 'package:wink/features/auth/presentation/widgets/divider_widget.dart';
-import 'package:wink/features/auth/presentation/widgets/sign_in_methods_section.dart';
-import 'package:wink/features/auth/presentation/widgets/sign_up_form_section.dart';
+import 'package:wink/features/auth/presentation/views/signup/sign_up_form_section_fstyled.dart';
+import 'package:wink/features/auth/presentation/views/signup/sign_up_view.dart';
 
-const Color babyPinkUltraLight = Color(0xFFF5DDD8); // Más clarito aún
-const Color softGold = Color(0xFFFFD700);
-const Color lightFrenchBeige = const Color(0xFFD0A583); // Fondo principal
-const Color bittersweetShimmer = const Color(0xFFBA4353); // Encabezados y elementos destacados
-const Color oliveDrabCamouflage = const Color(0xFF54E34); // Botones principales (marrón)
-const Color citron = const Color(0xFFAD9F22); // Color secundario/acentos
-
-const Color crema = const Color.fromARGB(1, 253, 252, 246);
 class SignUpView extends StatelessWidget {
   const SignUpView({super.key});
+  final Color background = const Color(0xFFF8F8F8);
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => RegisterCubit(),
       child: Scaffold(
-      backgroundColor: const Color.fromARGB(255, 253, 252, 246),
-        appBar: AppBar(),
+        backgroundColor: background, // fondo crema
+        // appBar: AppBar(
+        //   backgroundColor: Colors.transparent,
+        //   elevation: 0,
+        //   title: Image.asset(
+        //     'assets/logos/wink-background.png',
+        //     height: 40,
+        //   ),
+        //   centerTitle: true,
+        // ),
         body: SafeArea(
           child: SingleChildScrollView(
             physics: const BouncingScrollPhysics(),
@@ -33,21 +33,60 @@ class SignUpView extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  Center(
+                    child:   Image.asset(
+            'assets/logos/wink_background.png',
+            height: 120,
+            width:120
+          ),
+                  ),
+               
                   Text(
-                    TTexts.signUpTitle,
-                    style: Theme.of(context).textTheme.headlineMedium,
+                    "Solo regístrate y descubre lo fácil que es transaccionar.",
+                    style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                          fontFamily: 'Montserrat',
+                          fontWeight: FontWeight.w600,
+                        ),
                   ),
                   const SizedBox(height: TSizes.spaceBtwSections),
-                  const SignUpFormSection(),
-                  const SizedBox(height: TSizes.spaceBtwSections),
-                  //const DividerWidget(text: TTexts.orSignUpWith),
-                  //const SizedBox(height: TSizes.spaceBtwSections),
-                  //const SignInMethodsSection(),
+                  const SignUpFormSectionFStyled(),
                 ],
               ),
             ),
           ),
         ),
+      ),
+    );
+  }
+}
+class _SocialButton extends StatelessWidget {
+  final String text;
+  final IconData icon;
+  final Color bgColor;
+  final Color textColor;
+
+  const _SocialButton({
+    super.key,
+    required this.text,
+    required this.icon,
+    required this.bgColor,
+    required this.textColor,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: ElevatedButton.icon(
+        icon: Icon(icon, color: textColor),
+        label: Text(text, style: TextStyle(color: textColor)),
+        style: ElevatedButton.styleFrom(
+          backgroundColor: bgColor,
+          padding: const EdgeInsets.symmetric(vertical: 12),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+        ),
+        onPressed: () {},
       ),
     );
   }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:wink/core/common/view_models/circular_container_view_model.dart';
 import 'package:wink/core/common/widgets/circular_container.dart';
-import 'package:wink/core/common/widgets/read_more.dart';
+//import 'package:wink/core/common/widgets/read_more.dart';
 import 'package:wink/core/utils/constants/colors.dart';
 import 'package:wink/core/utils/constants/image_strings.dart';
 import 'package:wink/core/utils/constants/sizes.dart';
@@ -51,10 +51,10 @@ class UserReviewCard extends StatelessWidget {
         const SizedBox(
           height: TSizes.spaceBtwItems,
         ),
-        const ReadMore(
-          text:
-              "mahmoud hamdy fathy elashwah fluttei major to make backword by etoo in pes 6 ",
-        ),
+        // const ReadMore(
+        //   text:
+        //       "mahmoud hamdy fathy elashwah fluttei major to make backword by etoo in pes 6 ",
+        // ),
         const SizedBox(
           height: TSizes.spaceBtwItems,
         ),
@@ -77,10 +77,10 @@ class UserReviewCard extends StatelessWidget {
                   const SizedBox(
                     height: TSizes.spaceBtwItems,
                   ),
-                  const ReadMore(
-                    text:
-                        "mahmoud hamdy fathy elashwah flutter developer at myself and i major to make backword by etoo in pes 6 ",
-                  ),
+                  // const ReadMore(
+                  //   text:
+                  //       "mahmoud hamdy fathy elashwah flutter developer at myself and i major to make backword by etoo in pes 6 ",
+                  // ),
                 ],
               ),
             ),

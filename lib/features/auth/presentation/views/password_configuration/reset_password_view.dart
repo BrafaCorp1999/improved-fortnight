@@ -6,6 +6,7 @@ import 'package:wink/core/utils/constants/text_strings.dart';
 import 'package:wink/core/utils/device/device_utility.dart';
 import 'package:wink/core/utils/helpers/helper_functions.dart';
 import 'package:wink/features/auth/presentation/views/login/login_view.dart';
+import 'package:wink/features/auth/presentation/views/login/login_view2.dart';
 
 class ResetPasswordView extends StatelessWidget {
   const ResetPasswordView({super.key});
@@ -18,7 +19,7 @@ class ResetPasswordView extends StatelessWidget {
           IconButton(
             onPressed: () {
               THelperFunctions.navigateReplacementToScreen(
-                  context, const LoginView());
+                  context, const LoginView2());
             },
             icon: const Icon(CupertinoIcons.clear),
           )

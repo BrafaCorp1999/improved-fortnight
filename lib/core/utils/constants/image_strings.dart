@@ -85,6 +85,16 @@ class TImages {
   //     "assets/icons/categories/womens-watches.png";
 
   // -- Brand Icons
+
+  static const String armani = 'assets/icons/brands/brownie_logo.png';
+  static const String zara = 'assets/icons/brands/zara-logo.png';
+  static const String burberry = 'assets/icons/brands/noon-removebg-preview.png';
+  static const String balenciaga = 'assets/icons/brands/scalpers-removebg-preview.png';
+  static const String vans = 'assets/icons/brands/theare-removebg-preview.png';
+  static const String guess = 'assets/icons/brands/yuxus-removebg-preview.png';
+  static const String stone = 'assets/icons/brands/scuflers-removebg-preview.png';
+  static const String givenchy = 'assets/icons/brands/renatta-removebg-preview.png';
+
   static const String nikeLogo = "assets/icons/brands/nike.png";
   static const String brownie = "assets/icons/brands/brownie_logo.png";
   static const String adidasLogo = "assets/icons/brands/adidas-logo.png";
@@ -100,18 +110,27 @@ class TImages {
   static const String ikeaLogo = "assets/icons/brands/ikea_logo.png";
   //static const String acerlogo = "assets/icons/brands/acer_logo.png";
   static const List<String> brandIcons = [
-    nikeLogo,
-    brownie,
-    adidasLogo,
-    //appleLogo,
-    //jordanLogo,
-    pumaLogo,
-    zaraLogo,
-    kenwoodLogo,
-    the_are,
-    //hermanMillerLogo,
-    ikeaLogo
+    armani,
+    zara,
+    burberry,
+    balenciaga,
+    vans,
+    guess,
+    stone,
+    givenchy
     //acerlogo
+    // nikeLogo,
+    // brownie,
+    // adidasLogo,
+    // //appleLogo,
+    // //jordanLogo,
+    // pumaLogo,
+    // zaraLogo,
+    // kenwoodLogo,
+    // the_are,
+    // //hermanMillerLogo,
+    // ikeaLogo
+    // //acerlogo
   ];
 
   // -- Animations
