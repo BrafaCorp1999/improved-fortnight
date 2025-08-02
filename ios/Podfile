@@ -1,7 +1,7 @@
 platform :ios, '14.0'
 
-ENV['FLUTTER_ROOT'] ||= File.expand_path('../../flutter', __FILE__)
-require File.expand_path(File.join('packages', 'flutter_tools', 'bin', 'podhelper'), ENV['FLUTTER_ROOT'])
+ENV['FLUTTER_ROOT'] = File.expand_path('~/flutter')
+require File.expand_path(File.join(ENV['FLUTTER_ROOT'], 'packages', 'flutter_tools', 'bin', 'podhelper'))
 
 target 'Runner' do
   use_frameworks!
