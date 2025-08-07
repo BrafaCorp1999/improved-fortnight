@@ -1,6 +1,5 @@
-# Podfile
-
 platform :ios, '14.0'
+workspace 'Runner.xcworkspace'
 
 ENV['COCOAPODS_DISABLE_STATS'] = 'true'
 
@@ -10,29 +9,24 @@ project 'Runner', {
   'Release' => :release,
 }
 
-def flutter_installation
-  generated_xcconfig = File.expand_path(File.join('..', 'Flutter', 'Generated.xcconfig'), __FILE__)
-  unless File.exist?(generated_xcconfig)
-    abort "Generated.xcconfig must exist. Run 'flutter pub get' first."
+def flutter_root
+  generated_xcode_build_settings_path = File.expand_path(File.join('..', 'Flutter', 'Generated.xcconfig'), __FILE__)
+  unless File.exist?(generated_xcode_build_settings_path)
+    raise "#{generated_xcode_build_settings_path} must exist. If you're running pod install manually, make sure flutter build ios is executed first."
   end
-  IO.read(generated_xcconfig).scan(/FLUTTER_FRAMEWORK_DIR=(.*)/) do |match|
-    ENV['FLUTTER_FRAMEWORK_DIR'] = match[0]
+
+  File.foreach(generated_xcode_build_settings_path) do |line|
+    matches = line.match(/FLUTTER_ROOT\=(.*)/)
+    return matches[1].strip if matches
   end
+  raise "FLUTTER_ROOT not found in #{generated_xcode_build_settings_path}. Try deleting Flutter/Generated.xcconfig and running flutter build ios again."
 end
 
-require File.expand_path(File.join('packages', 'flutter_tools', 'bin', 'podhelper'), __FILE__)
+require File.expand_path(File.join('packages', 'flutter_tools', 'bin', 'podhelper'), flutter_root)
 
-flutter_installation
-install_all_flutter_pods
+target 'Runner' do
+  use_frameworks!
+  use_modular_headers!
 
-post_install do |installer|
-  installer.pods_project.targets.each do |target|
-    flutter_additional_ios_build_settings(target)
-
-    target.build_configurations.each do |config|
-      # Excluir arquitecturas no soportadas
-      config.build_settings['EXCLUDED_ARCHS[sdk=iphonesimulator*]'] = 'i386'
-      config.build_settings['EXCLUDED_ARCHS[sdk=iphoneos*]'] = 'armv7'
-    end
-  end
+  flutter_install_all_ios_pods(File.dirname(File.realpath(__FILE__)))
 end
